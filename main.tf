@@ -70,14 +70,14 @@ resource "kubernetes_secret" "vault" {
 */
 
 data "hcp_hvn" "existing" {
-  count  = var.deploy_vault_cluster ? 0 : 1
+  count  = var.deploy_hvn ? 0 : 1
   hvn_id = var.hvn_id
 }
 
 resource "hcp_vault_cluster" "vault_cluster" {
   count      = var.deploy_vault_cluster ? 1 : 0
   hvn_id     = data.hcp_hvn.existing[0].hvn_id
-  cluster_id = "hcp-tf-vault-eks"
+  cluster_id = var.cluster_id
 }
 
 resource "hcp_vault_cluster_admin_token" "vault_admin_token" {
@@ -118,3 +118,11 @@ resource "helm_release" "vault" {
     "${file("files/values.yaml")}"
   ]
 }
+/*
+resource "helm_release" "jenkins" {
+  name       = "jenkins"
+  repository = "https://charts.jenkins.io"
+  chart      = "jenkins"
+
+}
+*/

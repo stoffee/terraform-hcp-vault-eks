@@ -1,6 +1,6 @@
 variable "cluster_id" {
   type        = string
-  description = "The name of your HCP Consul cluster"
+  description = "The name of your HCP Vault cluster"
   default     = "hcp-vault"
 }
 
@@ -30,6 +30,12 @@ variable "hvn_region" {
 variable "deploy_vault_cluster" {
   type        = string
   description = "Choose to deploy HCP Vault Cluster"
+  default     = false
+}
+
+variable "deploy_hvn" {
+  type        = string
+  description = "Choose to deploy HCP HVP or use an existing one"
   default     = false
 }
 
