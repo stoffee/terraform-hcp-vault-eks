@@ -7,7 +7,7 @@ variable "cluster_id" {
 variable "vault_internal_addr" {
   type        = string
   description = "The internal url of your HCP vault cluster"
-  default     = "https://vault-stoffee-io.private.vault.f4cfade2-df28-47f2-a365-28cd5d95d9a0.aws.hashicorp.cloud:8200"
+  default     = "https://MyVault.private.vault.f4cfade2-df28-47f2-a365-56gb2a62d8c5.aws.hashicorp.cloud:8200"
 }
 variable "hvn_cidr_block" {
   type        = string
