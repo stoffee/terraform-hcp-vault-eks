@@ -39,8 +39,8 @@ terraform init && terraform apply -var-file="sample.tfvars"
 
 #### HCP Vault
 
-The HCP Vault cluster can be accessed via the outputs `consul_url` and
-`consul_root_token`.
+The HCP Vault cluster can be accessed via the outputs `vault_url` and
+`vault_root_token`.
 
 #### EKS Cluster
 
