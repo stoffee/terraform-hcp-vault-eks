@@ -35,7 +35,7 @@ module "eks" {
   version                = "17.24.0"
   kubeconfig_api_version = "client.authentication.k8s.io/v1beta1"
 
-  cluster_name    = "${var.cluster_id}-cluster"
+  cluster_name = "${var.cluster_id}-cluster"
   #cluster_version = "1.24"
   cluster_version = "1.21"
   subnets         = module.vpc.private_subnets
@@ -70,7 +70,7 @@ resource "kubernetes_secret" "vault" {
 */
 
 data "hcp_hvn" "existing" {
-  count      = var.deploy_vault_cluster ? 0 : 1
+  count  = var.deploy_vault_cluster ? 0 : 1
   hvn_id = var.hvn_id
 }
 
@@ -90,8 +90,8 @@ data "aws_arn" "peer" {
 }
 
 resource "hcp_aws_network_peering" "hcp" {
-  hvn_id      = var.hvn_id
-  peering_id  = "hcp"
+  hvn_id          = var.hvn_id
+  peering_id      = "hcp"
   peer_vpc_id     = module.vpc.vpc_id
   peer_account_id = module.vpc.vpc_owner_id
   peer_vpc_region = data.aws_arn.peer.region
@@ -115,6 +115,6 @@ resource "helm_release" "vault" {
   chart      = "vault"
 
   values = [
-    "${file("values.yaml")}"
+    "${file("files/values.yaml")}"
   ]
 }

@@ -29,7 +29,7 @@ export VAULT_NAMESPACE=admin
 terraform init && terraform apply
 ```
 
-2. Edit the sample.tfvars to customize the install, then initialize and apply the Terraform configuration to get a customized environment
+2. Rename and edit the sample.tfvars to customize the install, then initialize and apply the Terraform configuration to get a customized environment
 
 ```
 terraform init && terraform apply -var-file="sample.tfvars"

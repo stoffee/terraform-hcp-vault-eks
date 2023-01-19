@@ -1,0 +1,7 @@
+hvn_id               = "hcp-hvn-vault"
+cluster_id           = "eks_hcp_vault"
+deploy_vault_cluster = "false"
+install_eks_cluster  = "true"
+hvn_region           = "us-west-2"
+vpc_region           = "us-west-2"
+vault_internal_addr  = "https://MYVault.private.vault.f4cfade2-df28-47f2-a365-56gb2a62d8c5.aws.hashicorp.cloud:8200"
