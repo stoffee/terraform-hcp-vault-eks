@@ -1,7 +1,7 @@
 ## HCP Vault EKS
 
-This Terraform example stands up a full deployment of a HCP Vault cluster
-with an AWS EKS cluster.
+This Terraform module stands up a full deployment of a HCP Vault cluster
+with an AWS EKS cluster and VPC peering.
 
 ### Prerequisites
 
