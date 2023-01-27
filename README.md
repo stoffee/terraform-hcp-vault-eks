@@ -1,7 +1,7 @@
-## HCP Vault EKS
+## HCP Vault EKS Module
 
-This Terraform module stands up a full deployment of a HCP Vault cluster
-with an AWS EKS cluster and VPC peering.
+This repo contains a Terraform module that stands up a full deployment of a HCP Vault cluster
+with an AWS EKS cluster and VPC peering. This module can also be customized to only deploy what you need.
 
 ### Prerequisites
 
@@ -21,6 +21,10 @@ export VAULT_NAMESPACE=admin
 
 3. Export your AWS Account credentials, as defined by the AWS Terraform provider
 
+# Hashicorp Vault Namespace Module Examples
+
+Please check the [examples](https://github.com/stoffee/terraform-hcp-vault-eks/tree/primary/examples) for example deployments.
+
 ### Deployment
 
 1. Initialize and apply the Terraform configuration to get a full environment
@@ -29,7 +33,7 @@ export VAULT_NAMESPACE=admin
 terraform init && terraform apply
 ```
 
-2. Rename and edit the sample.tfvars to customize the install, then initialize and apply the Terraform configuration to get a customized environment
+2. Rename sample.tfvars_example to sample.tfvars and edit to customize the install, then initialize and apply the Terraform configuration to get a customized environment
 
 ```
 terraform init && terraform apply -var-file="sample.tfvars"
@@ -54,5 +58,4 @@ export KUBECONFIG=$(terraform output --raw kubeconfig_filename)
 
 #### Demo Application
 
-**Warning**: This application is publicly accessible, make sure to delete the Kubernetes
-resources associated to the application when done.
+**Warning**: This application is publicly accessible, make sure to delete the Kubernetes resources associated to the application when done.

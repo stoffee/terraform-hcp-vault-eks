@@ -33,6 +33,7 @@ module "eks" {
   count                  = var.install_eks_cluster ? 1 : 0
   source                 = "terraform-aws-modules/eks/aws"
   version                = "17.24.0"
+  #version                = "19.5.1"
   kubeconfig_api_version = "client.authentication.k8s.io/v1beta1"
 
   cluster_name = "${var.cluster_id}-cluster"
@@ -43,14 +44,27 @@ module "eks" {
 
   manage_aws_auth = false
 
+ /* 
+  cluster_security_group_additional_rules = {
+    ingress_nodes_ephemeral_ports_tcp = {
+      description                = "Vault Port"
+      protocol                   = "tcp"
+      from_port                  = 8200
+      to_port                    = 8200
+      type                       = "ingress"
+      source_node_security_group = true
+    }
+  }
+*/
   node_groups = {
     application = {
       name_prefix    = "hashi"
-      instance_types = ["t3a.medium"]
+      instance_types = ["t2.micro"]
+      #instance_types = ["t3a.medium"]
 
-      desired_capacity = 2
+      desired_capacity = 3
       max_capacity     = 3
-      min_capacity     = 1
+      min_capacity     = 2
     }
   }
 }
@@ -115,10 +129,18 @@ resource "helm_release" "vault" {
   chart      = "vault"
 
   values = [
-    "${file("files/values.yaml")}"
+    "${file("${path.module}/files/values.yaml")}"
+    #"${file("files/values.yaml")}"
   ]
 }
+
 /*
+resource "helm_release" "wordpress" {
+  name       = "wordpress"
+  repository = "https://charts.bitnami.com/bitnami"
+  chart      = "wordpress"
+}
+
 resource "helm_release" "jenkins" {
   name       = "jenkins"
   repository = "https://charts.jenkins.io"

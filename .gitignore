@@ -1,6 +1,12 @@
+examples*
 #k8s
 kubeconfig*
 *kubeconfig*
+*notinuse
+
+#vscode
+*.vscode*
+.vscode*
 
 #certs & other security things
 *.pem
