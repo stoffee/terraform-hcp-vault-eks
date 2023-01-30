@@ -20,17 +20,17 @@ module "vpc" {
 }
 
 data "aws_eks_cluster" "cluster" {
-  count = var.install_eks_cluster ? 1 : 0
+  count = var.deploy_eks_cluster ? 1 : 0
   name  = module.eks[0].cluster_id
 }
 
 data "aws_eks_cluster_auth" "cluster" {
-  count = var.install_eks_cluster ? 1 : 0
+  count = var.deploy_eks_cluster ? 1 : 0
   name  = module.eks[0].cluster_id
 }
 
 module "eks" {
-  count                  = var.install_eks_cluster ? 1 : 0
+  count                  = var.deploy_eks_cluster ? 1 : 0
   source                 = "terraform-aws-modules/eks/aws"
   version                = "17.24.0"
   #version                = "19.5.1"
@@ -83,24 +83,40 @@ resource "kubernetes_secret" "vault" {
 }
 */
 
+/*
 data "hcp_hvn" "existing" {
   count  = var.deploy_hvn ? 0 : 1
   hvn_id = var.hvn_id
 }
 
-resource "hcp_vault_cluster" "vault_cluster" {
-  count      = var.deploy_vault_cluster ? 1 : 0
+resource "hcp_vault_cluster" "vault_cluster_existing_hvn" {
+  count      = var.deploy_vault_cluster ? 1 : 0 && var.deploy_hvn ? 0 : 1
   hvn_id     = data.hcp_hvn.existing[0].hvn_id
+  cluster_id = var.cluster_id
+}
+*/
+
+resource "hcp_vault_cluster" "vault_cluster_new" {
+  count      = var.deploy_vault_cluster ? 1 : 0
+  #hvn_id     = data.hcp_hvn.existing[0].hvn_id
+  hvn_id     = hcp_hvn.new.hvn_id
   cluster_id = var.cluster_id
 }
 
 resource "hcp_vault_cluster_admin_token" "vault_admin_token" {
   count      = var.deploy_vault_cluster ? 1 : 0
-  cluster_id = hcp_vault_cluster.vault_cluster[0].cluster_id
+  cluster_id = hcp_vault_cluster.vault_cluster_new[0].cluster_id
 }
 
 data "aws_arn" "peer" {
   arn = module.vpc.vpc_arn
+}
+
+resource "hcp_hvn" "new" {
+  hvn_id         = var.hvn_id
+  cloud_provider = "aws"
+  region         = "us-west-2"
+  cidr_block     = "172.25.16.0/20"
 }
 
 resource "hcp_aws_network_peering" "hcp" {
@@ -112,7 +128,8 @@ resource "hcp_aws_network_peering" "hcp" {
 }
 
 resource "hcp_hvn_route" "existing-to-hcp" {
-  hvn_link         = data.hcp_hvn.existing[0].self_link
+  hvn_link         = hcp_hvn.new.self_link
+  #hvn_link         = data.hcp_hvn.existing[0].self_link
   hvn_route_id     = "aws-to-hcp"
   destination_cidr = module.vpc.vpc_cidr_block
   target_link      = hcp_aws_network_peering.hcp.self_link
