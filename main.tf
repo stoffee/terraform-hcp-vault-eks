@@ -20,17 +20,17 @@ module "vpc" {
 }
 
 data "aws_eks_cluster" "cluster" {
-  count = var.install_eks_cluster ? 1 : 0
+  count = var.deploy_eks_cluster ? 1 : 0
   name  = module.eks[0].cluster_id
 }
 
 data "aws_eks_cluster_auth" "cluster" {
-  count = var.install_eks_cluster ? 1 : 0
+  count = var.deploy_eks_cluster ? 1 : 0
   name  = module.eks[0].cluster_id
 }
 
 module "eks" {
-  count                  = var.install_eks_cluster ? 1 : 0
+  count                  = var.deploy_eks_cluster ? 1 : 0
   source                 = "terraform-aws-modules/eks/aws"
   version                = "17.24.0"
   #version                = "19.5.1"
@@ -88,7 +88,12 @@ data "hcp_hvn" "existing" {
   hvn_id = var.hvn_id
 }
 
-resource "hcp_vault_cluster" "vault_cluster" {
+resource "hcp_vault_cluster" "vault_cluster_existing_hvn" {
+  count      = var.deploy_vault_cluster ? 1 : 0 && var.deploy_hvn ? 0 : 1
+  hvn_id     = data.hcp_hvn.existing[0].hvn_id
+  cluster_id = var.cluster_id
+}
+resource "hcp_vault_cluster" "vault_cluster_new" {
   count      = var.deploy_vault_cluster ? 1 : 0
   hvn_id     = data.hcp_hvn.existing[0].hvn_id
   cluster_id = var.cluster_id

@@ -39,7 +39,7 @@ variable "deploy_hvn" {
   default     = false
 }
 
-variable "install_eks_cluster" {
+variable "deploy_eks_cluster" {
   type        = string
   description = "Choose if you want an eks cluster to be provisioned"
   default     = true
