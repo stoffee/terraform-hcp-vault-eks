@@ -8,18 +8,14 @@ with an AWS EKS cluster and VPC peering. This module can also be customized to o
 1. Create a HCP Service Key and set the required environment variables
 
 ```
-export HCP_CLIENT_ID=...
-export HCP_CLIENT_SECRET=...
+export HCP_CLIENT_ID=
+export HCP_CLIENT_SECRET=
 ```
 
-2. Export your Vault Account credentials
+1. Export your AWS Account credentials, as defined by the AWS Terraform provider
 ```
-export VAULT_ADDR=...
-export VAULT_TOKEN=...
-export VAULT_NAMESPACE=admin
-```
+export AWS_ACCESS_KEY_ID=
 
-3. Export your AWS Account credentials, as defined by the AWS Terraform provider
 
 # Hashicorp Vault Namespace Module Examples
 
@@ -27,13 +23,7 @@ Please check the [examples](https://github.com/stoffee/terraform-hcp-vault-eks/t
 
 ### Deployment
 
-1. Initialize and apply the Terraform configuration to get a full environment
-
-```
-terraform init && terraform apply
-```
-
-2. Rename sample.tfvars_example to sample.auto.tfvars and edit to customize the install, then initialize and apply the Terraform configuration to get a customized environment
+1. Rename sample.tfvars_example to sample.auto.tfvars and edit to customize the install, then initialize and apply the Terraform configuration to get a customized environment
 
 ```
 terraform init && terraform apply
