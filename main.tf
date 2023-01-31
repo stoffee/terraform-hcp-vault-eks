@@ -101,6 +101,7 @@ resource "hcp_vault_cluster" "vault_cluster_new" {
   #hvn_id     = data.hcp_hvn.existing[0].hvn_id
   hvn_id     = hcp_hvn.new.hvn_id
   cluster_id = var.cluster_id
+  public_endpoint  = true
 }
 
 resource "hcp_vault_cluster_admin_token" "vault_admin_token" {
