@@ -5,9 +5,12 @@ data "aws_availability_zones" "available" {
   }
 }
 
+resource "random_pet" "server" {}
+
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "2.78.0"
+  version = "3.19.0"
+  #version = "2.78.0"
 
   name                 = "${var.cluster_id}-vpc"
   cidr                 = "10.0.0.0/16"
@@ -21,30 +24,31 @@ module "vpc" {
 
 data "aws_eks_cluster" "cluster" {
   count = var.deploy_eks_cluster ? 1 : 0
+  #name  = "${var.cluster_id}-cluster"
   name  = module.eks[0].cluster_id
 }
 
 data "aws_eks_cluster_auth" "cluster" {
   count = var.deploy_eks_cluster ? 1 : 0
-  name  = module.eks[0].cluster_id
+  name  = "${var.cluster_id}-cluster"
+  #name  = module.eks[0].cluster_id
 }
 
 module "eks" {
-  count                  = var.deploy_eks_cluster ? 1 : 0
-  source                 = "terraform-aws-modules/eks/aws"
-  version                = "17.24.0"
-  #version                = "19.5.1"
-  kubeconfig_api_version = "client.authentication.k8s.io/v1beta1"
+  count  = var.deploy_eks_cluster ? 1 : 0
+  source = "terraform-aws-modules/eks/aws"
+  #version                = "17.24.0"
+  version = "19.6.0"
+  #kubeconfig_api_version = "client.authentication.k8s.io/v1beta1"
 
   cluster_name = "${var.cluster_id}-cluster"
   #cluster_version = "1.24"
   cluster_version = "1.21"
-  subnets         = module.vpc.private_subnets
+  subnet_ids      = module.vpc.private_subnets
   vpc_id          = module.vpc.vpc_id
 
-  manage_aws_auth = false
+  manage_aws_auth_configmap = false
 
- /* 
   cluster_security_group_additional_rules = {
     ingress_nodes_ephemeral_ports_tcp = {
       description                = "Vault Port"
@@ -55,10 +59,10 @@ module "eks" {
       source_node_security_group = true
     }
   }
-*/
-  node_groups = {
+
+  eks_managed_node_groups = {
     application = {
-      name_prefix    = "hashi"
+      name_prefix    = random_pet.server.id
       instance_types = ["t2.micro"]
       #instance_types = ["t3a.medium"]
 
@@ -97,11 +101,11 @@ resource "hcp_vault_cluster" "vault_cluster_existing_hvn" {
 */
 
 resource "hcp_vault_cluster" "vault_cluster_new" {
-  count      = var.deploy_vault_cluster ? 1 : 0
+  count = var.deploy_vault_cluster ? 1 : 0
   #hvn_id     = data.hcp_hvn.existing[0].hvn_id
-  hvn_id     = hcp_hvn.new.hvn_id
-  cluster_id = var.cluster_id
-  public_endpoint  = true
+  hvn_id          = hcp_hvn.new.hvn_id
+  cluster_id      = var.cluster_id
+  public_endpoint = true
 }
 
 resource "hcp_vault_cluster_admin_token" "vault_admin_token" {
@@ -118,6 +122,7 @@ resource "hcp_hvn" "new" {
   cloud_provider = "aws"
   region         = "us-west-2"
   cidr_block     = "172.25.16.0/20"
+  depends_on = [module.eks]
 }
 
 resource "hcp_aws_network_peering" "hcp" {
@@ -129,7 +134,7 @@ resource "hcp_aws_network_peering" "hcp" {
 }
 
 resource "hcp_hvn_route" "existing-to-hcp" {
-  hvn_link         = hcp_hvn.new.self_link
+  hvn_link = hcp_hvn.new.self_link
   #hvn_link         = data.hcp_hvn.existing[0].self_link
   hvn_route_id     = "aws-to-hcp"
   destination_cidr = module.vpc.vpc_cidr_block
@@ -151,18 +156,3 @@ resource "helm_release" "vault" {
     #"${file("files/values.yaml")}"
   ]
 }
-
-/*
-resource "helm_release" "wordpress" {
-  name       = "wordpress"
-  repository = "https://charts.bitnami.com/bitnami"
-  chart      = "wordpress"
-}
-
-resource "helm_release" "jenkins" {
-  name       = "jenkins"
-  repository = "https://charts.jenkins.io"
-  chart      = "jenkins"
-
-}
-*/
