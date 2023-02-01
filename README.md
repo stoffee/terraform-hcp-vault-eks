@@ -1,13 +1,13 @@
-## HCP Vault EKS Module
+# HCP Vault EKS Module
 
 This repo contains a Terraform module that stands up a full deployment of a HCP Vault cluster
 with an AWS EKS cluster and VPC peering. This module can also be customized to only deploy what you need.
 
-# HCP Vault EKS Module Examples
+## HCP Vault EKS Module Examples
 
 Please check the [examples](https://github.com/stoffee/terraform-hcp-vault-eks/tree/primary/examples) for example deployments.
 
-### Deployment
+## Deployment
 
 ### Prerequisites
 
@@ -35,12 +35,11 @@ terraform init && terraform apply
 
 #### HCP Vault
 
-The HCP Vault cluster can be accessed via the outputs `vault_private_url`, `vault_public_url`, and `vault_root_token`.
+The HCP Vault cluster can be accessed via the terraform outputs `vault_private_url`, `vault_public_url`, and `vault_root_token`.
 
 #### EKS Cluster
 
-The EKS cluster can be accessed via the output `kubeconfig_filename`, which
-references a created kubeconfig file that can be used by setting the
+The EKS cluster can be accessed via the terraform output `kubeconfig_filename`, which references a created kubeconfig file that can be used by setting the
 `KUBECONFIG` environment variable
 
 ```bash
