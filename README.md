@@ -131,21 +131,39 @@ kubectl get pods
 export POSTGRES_IP=$(kubectl get service -o jsonpath='{.status.loadBalancer.ingress[0].hostname}' \
    postgres)
 
+vault secrets enable database
+
 vault write database/config/products \
     plugin_name=postgresql-database-plugin \
     allowed_roles="*" \
     connection_url="postgresql://{{username}}:{{password}}@${POSTGRES_IP}:5432/products?sslmode=disable" \
     username="postgres" \
     password="password"
+
+vault write database/roles/product \
+    db_name=products \
+    creation_statements="CREATE ROLE \"{{name}}\" WITH LOGIN PASSWORD '{{password}}' VALID UNTIL '{{expiration}}'; \
+        GRANT SELECT ON ALL TABLES IN SCHEMA public TO \"{{name}}\";" \
+    revocation_statements="ALTER ROLE \"{{name}}\" NOLOGIN;"\
+    default_ttl="1h" \
+    max_ttl="24h"
+
+
+vault read database/creds/product
 ```
 
-#### Edit file/values.yaml and replace the hostname with your vault internal URL from the HCP console
-you can retrieve it with this command
+#### Create policy in Vault
 ```bash
-terraform output --raw vault_private_url
+vault policy write product files/product.hcl
+
+vault write auth/kubernetes/role/product \
+    bound_service_account_names=product \
+    bound_service_account_namespaces=default \
+    policies=product \
+    ttl=1h
 ```
 
-#### Deploy the prodcut app
+#### Deploy the product app
 ```bash
 kubectl apply -f files/product.yaml
 ```
