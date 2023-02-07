@@ -22,9 +22,3 @@ output "eks_cluster_name" {
 output "node_security_group_id" {
   value = module.eks[0].node_security_group_id
 }
-
-/*
-output "helm_values_filename" {
-  value = abspath(module.eks_consul_client.helm_values_file)
-}
-*/
