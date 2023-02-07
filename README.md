@@ -109,6 +109,8 @@ export KUBE_HOST=$(kubectl config view --raw --minify --flatten \
    -o jsonpath='{.clusters[].cluster.server}')
 # example: KUBE_HOST=https://6677B3488C2D5C0162A558C881AF9922.gr7.us-west-2.eks.amazonaws.com
 
+vault auth enable kubernetes
+
 vault write auth/kubernetes/config \
    token_reviewer_jwt="$TOKEN_REVIEW_JWT" \
    kubernetes_host="$KUBE_HOST" \

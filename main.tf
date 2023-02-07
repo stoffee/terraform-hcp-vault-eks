@@ -23,9 +23,9 @@ module "vpc" {
 }
 
 data "aws_eks_cluster" "cluster" {
-  count = var.deploy_eks_cluster ? 1 : 0
-  #name  = "${var.cluster_id}-cluster"
-  name  = module.eks[0].cluster_id
+  count = var.deploy_eks_cluster ? 0 : 1
+  name  = "${var.cluster_id}-cluster"
+  #name  = module.eks[0].cluster_id
 }
 
 data "aws_eks_cluster_auth" "cluster" {
@@ -40,6 +40,7 @@ module "eks" {
   #version                = "17.24.0"
   version = "19.6.0"
   #kubeconfig_api_version = "client.authentication.k8s.io/v1beta1"
+  cluster_endpoint_public_access = true
 
   cluster_name = "${var.cluster_id}-cluster"
   #cluster_version = "1.24"
@@ -50,7 +51,7 @@ module "eks" {
   manage_aws_auth_configmap = false
 
   cluster_security_group_additional_rules = {
-    ingress_nodes_ephemeral_ports_tcp = {
+    ingress_node_vault_port = {
       description                = "Vault Port"
       protocol                   = "tcp"
       from_port                  = 8200
@@ -58,13 +59,23 @@ module "eks" {
       type                       = "ingress"
       source_node_security_group = true
     }
+   /*
+    ingress_node_443_tcp = {
+      description                = "443 Port"
+      protocol                   = "tcp"
+      from_port                  = 443
+      to_port                    = 443
+      type                       = "ingress"
+      source_node_security_group = true
+    }
+    */
   }
 
   eks_managed_node_groups = {
     application = {
       name_prefix    = random_pet.server.id
-      instance_types = ["t2.micro"]
-      #instance_types = ["t3a.medium"]
+      #instance_types = ["t2.micro"]
+      instance_types = ["t3a.medium"]
 
       desired_capacity = 3
       max_capacity     = 3
@@ -82,7 +93,6 @@ resource "kubernetes_secret" "vault" {
       "kubernetes.io/service-account.name" = "vault"
     }
   }
-
   type = "kubernetes.io/service-account-token"
 }
 */
@@ -92,7 +102,6 @@ data "hcp_hvn" "existing" {
   count  = var.deploy_hvn ? 0 : 1
   hvn_id = var.hvn_id
 }
-
 resource "hcp_vault_cluster" "vault_cluster_existing_hvn" {
   count      = var.deploy_vault_cluster ? 1 : 0 && var.deploy_hvn ? 0 : 1
   hvn_id     = data.hcp_hvn.existing[0].hvn_id
@@ -122,7 +131,7 @@ resource "hcp_hvn" "new" {
   cloud_provider = "aws"
   region         = "us-west-2"
   cidr_block     = "172.25.16.0/20"
-  depends_on = [module.eks]
+  depends_on     = [module.eks]
 }
 
 resource "hcp_aws_network_peering" "hcp" {
@@ -139,6 +148,7 @@ resource "hcp_hvn_route" "existing-to-hcp" {
   hvn_route_id     = "aws-to-hcp"
   destination_cidr = module.vpc.vpc_cidr_block
   target_link      = hcp_aws_network_peering.hcp.self_link
+  depends_on       = [module.eks, hcp_vault_cluster_admin_token.vault_admin_token]
 }
 
 resource "aws_vpc_peering_connection_accepter" "peer" {
@@ -150,9 +160,11 @@ resource "helm_release" "vault" {
   name       = "vault"
   repository = "https://helm.releases.hashicorp.com"
   chart      = "vault"
-
-  values = [
-    "${file("${path.module}/files/values.yaml")}"
-    #"${file("files/values.yaml")}"
+  depends_on = [hcp_vault_cluster_admin_token.vault_admin_token]
+  values = [<<EOF
+  injector:
+   enabled: true
+   externalVaultAddr: ${hcp_vault_cluster.vault_cluster_new[0].vault_public_endpoint_url}
+  EOF
   ]
 }
