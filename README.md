@@ -116,7 +116,6 @@ vault write auth/kubernetes/config \
    kubernetes_host="$KUBE_HOST" \
    kubernetes_ca_cert="$KUBE_CA_CERT"
 ```
-# Error writing data to auth/kubernetes/config: Put "https://127.0.0.1:8200/v1/auth/kubernetes/config": dial tcp 127.0.0.1:8200: connect: connection refused
 
 #### Deploy Postgres
 ```bash
