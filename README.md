@@ -83,31 +83,25 @@ export VAULT_NAMESPACE=admin
 ```bash
 aws eks --region us-west-2 update-kubeconfig --name $(terraform output --raw eks_cluster_name)
 ```
-#### allow 8200 traffic for worker nodes
-```bash
-aws ec2 --region us-west-2 authorize-security-group-egress --group-id $(terraform output --raw node_security_group_id) --ip-permissions IpProtocol=tcp,FromPort=8200,ToPort=8200,IpRanges='[{CidrIp=172.25.16.0/20}]' --output
-```
-Sample response:
-
-```
-True
-SECURITYGROUPRULES      172.25.16.0/20  8200    sg-0366c6d221833eb8e    670394095681    tcp     True    sgr-09c3f57e2dfec5515   8200
-```
 
 #### Configure Kube auth method for Vault
 ```bash
 export TOKEN_REVIEW_JWT=$(kubectl get secret \
    $(kubectl get serviceaccount vault -o jsonpath='{.secrets[0].name}') \
    -o jsonpath='{ .data.token }' | base64 --decode)
-# TODO: Display first 20 chars to verify.
+
+echo $TOKEN_REVIEW_JWT
 
 export KUBE_CA_CERT=$(kubectl get secret \
    $(kubectl get serviceaccount vault -o jsonpath='{.secrets[0].name}') \
    -o jsonpath='{ .data.ca\.crt }' | base64 --decode)
 
+echo KUBE_CA_CERT
+
 export KUBE_HOST=$(kubectl config view --raw --minify --flatten \
    -o jsonpath='{.clusters[].cluster.server}')
 # example: KUBE_HOST=https://6677B3488C2D5C0162A558C881AF9922.gr7.us-west-2.eks.amazonaws.com
+echo KUBE_HOST
 
 vault auth enable kubernetes
 
@@ -130,6 +124,8 @@ kubectl get pods
 ```bash
 export POSTGRES_IP=$(kubectl get service -o jsonpath='{.status.loadBalancer.ingress[0].hostname}' \
    postgres)
+
+echo $POSTGRES_IP
 
 vault secrets enable database
 
