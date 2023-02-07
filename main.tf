@@ -24,30 +24,27 @@ module "vpc" {
 
 data "aws_eks_cluster" "cluster" {
   count = var.deploy_eks_cluster ? 0 : 1
-  name  = "${var.cluster_id}-eks"
-  #name  = module.eks[0].cluster_id
+  #name  = "${var.cluster_id}-eks"
+  name = module.eks[0].cluster_name
 }
 
 data "aws_eks_cluster_auth" "cluster" {
   count = var.deploy_eks_cluster ? 1 : 0
-  name  = "${var.cluster_id}-cluster"
-  #name  = module.eks[0].cluster_id
+  #name  = "${var.cluster_id}-eks"
+  name = module.eks[0].cluster_name
 }
 
 module "eks" {
-  count  = var.deploy_eks_cluster ? 1 : 0
-  source = "terraform-aws-modules/eks/aws"
-  #version                = "17.24.0"
-  version = "~> 19.6.0"
-  #kubeconfig_api_version = "client.authentication.k8s.io/v1beta1"
+  count                          = var.deploy_eks_cluster ? 1 : 0
+  source                         = "terraform-aws-modules/eks/aws"
+  version                        = "~> 19.6.0"
   cluster_endpoint_public_access = true
-  cluster_endpoint_public_access_cidrs = [ "0.0.0.0/0" ]
 
-  cluster_name = "${var.cluster_id}-cluster"
+  cluster_name    = "${var.cluster_id}-eks"
   #cluster_version = "1.24"
   cluster_version = "1.21"
-  subnet_ids      = module.vpc.private_subnets
-  vpc_id          = module.vpc.vpc_id
+  subnet_ids = module.vpc.private_subnets
+  vpc_id     = module.vpc.vpc_id
 
   manage_aws_auth_configmap = false
 
@@ -64,7 +61,7 @@ module "eks" {
 
   eks_managed_node_groups = {
     ubettawerk = {
-      name_prefix    = random_pet.server.id
+      name_prefix = random_pet.server.id
       #instance_types = ["t2.micro"]
       instance_types = ["t3a.medium"]
 
@@ -131,7 +128,7 @@ resource "hcp_aws_network_peering" "hcp" {
   peer_vpc_id     = module.vpc.vpc_id
   peer_account_id = module.vpc.vpc_owner_id
   peer_vpc_region = data.aws_arn.peer.region
-  depends_on       = [module.eks, hcp_vault_cluster_admin_token.vault_admin_token]
+  depends_on      = [module.eks, hcp_vault_cluster_admin_token.vault_admin_token]
 }
 
 resource "hcp_hvn_route" "existing-to-hcp" {
@@ -140,7 +137,7 @@ resource "hcp_hvn_route" "existing-to-hcp" {
   hvn_route_id     = "aws-to-hcp"
   destination_cidr = module.vpc.vpc_cidr_block
   target_link      = hcp_aws_network_peering.hcp.self_link
-  depends_on       = [helm_release.vault]
+  depends_on       = [module.eks]
 }
 
 resource "aws_vpc_peering_connection_accepter" "peer" {
@@ -161,7 +158,7 @@ resource "helm_release" "vault" {
    externalVaultAddr: ${hcp_vault_cluster.vault_cluster_new[0].vault_private_endpoint_url}
   EOF
   ]
-  */
+*/
   # public vault enpoint
   values = [<<EOF
   injector:
