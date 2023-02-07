@@ -37,13 +37,24 @@ terraform init && terraform apply
 
 The HCP Vault cluster can be accessed via the terraform outputs `vault_private_url`, `vault_public_url`, and `vault_root_token`.
 
+```bash
+terraform output --raw vault_public_url
+```
+```bash
+terraform output --raw vault_priate_url
+```
+```bash
+terraform output --raw vault_root_token
+```
+
+
 #### EKS Cluster
 
 The EKS cluster can be accessed via the terraform output `kubeconfig_filename`, which references a created kubeconfig file that can be used by setting the
 `KUBECONFIG` environment variable
 
 ```bash
-export KUBECONFIG=$(terraform output --raw kubeconfig_filename)
+terraform output --raw kubeconfig_filename
 ```
 
 #### Demo Application
