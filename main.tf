@@ -62,8 +62,7 @@ module "eks" {
   eks_managed_node_groups = {
     ubettawerk = {
       name_prefix = random_pet.server.id
-      #instance_types = ["t2.micro"]
-      instance_types = ["t3a.medium"]
+      instance_types = var.eks_instance_types
 
       desired_capacity = 3
       max_capacity     = 3
@@ -86,10 +85,6 @@ resource "kubernetes_secret" "vault" {
 */
 
 /*
-data "hcp_hvn" "existing" {
-  count  = var.deploy_hvn ? 0 : 1
-  hvn_id = var.hvn_id
-}
 resource "hcp_vault_cluster" "vault_cluster_existing_hvn" {
   count      = var.deploy_vault_cluster ? 1 : 0 && var.deploy_hvn ? 0 : 1
   hvn_id     = data.hcp_hvn.existing[0].hvn_id
@@ -97,11 +92,12 @@ resource "hcp_vault_cluster" "vault_cluster_existing_hvn" {
 }
 */
 
-resource "hcp_vault_cluster" "vault_cluster_new" {
+resource "hcp_vault_cluster" "vault_cluster_new"{
   count = var.deploy_vault_cluster ? 1 : 0
   #hvn_id     = data.hcp_hvn.existing[0].hvn_id
-  hvn_id          = hcp_hvn.new.hvn_id
-  cluster_id      = var.cluster_id
+  hvn_id          = var.deploy_hvn ? hcp_hvn.new[0].hvn_id : data.hcp_hvn.existing[0].hvn_id
+  #hvn_id          = (hcp_hvn.new[0].hvn_id != null) ? hcp_hvn.new[0].hvn_id : data.hcp_hvn.existing[0].hvn_id
+  cluster_id      = var.hcp_vault_cluster_id
   public_endpoint = true
 }
 
@@ -114,7 +110,14 @@ data "aws_arn" "peer" {
   arn = module.vpc.vpc_arn
 }
 
+# HVN existing and new
+data "hcp_hvn" "existing" {
+  count  = var.deploy_hvn ? 0 : 1
+  hvn_id = var.hvn_id
+}
+
 resource "hcp_hvn" "new" {
+  count  = var.deploy_hvn ? 1 : 0
   hvn_id         = var.hvn_id
   cloud_provider = "aws"
   region         = "us-west-2"
@@ -132,7 +135,8 @@ resource "hcp_aws_network_peering" "hcp" {
 }
 
 resource "hcp_hvn_route" "existing-to-hcp" {
-  hvn_link = hcp_hvn.new.self_link
+  count  = var.deploy_hvn ? 1 : 0
+  hvn_link = hcp_hvn.new[0].self_link
   #hvn_link         = data.hcp_hvn.existing[0].self_link
   hvn_route_id     = "aws-to-hcp"
   destination_cidr = module.vpc.vpc_cidr_block

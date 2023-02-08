@@ -19,6 +19,28 @@ output "kubeconfig_filename" {
   value = abspath(one(module.eks[*].aws_auth_configmap_yaml))
 }
 
+################################################################################
+# Security Group
+################################################################################
+
+output "cluster_security_group_arn" {
+  description = "Amazon Resource Name (ARN) of the cluster security group"
+  value       = module.eks[0].cluster_security_group_arn
+}
+
+output "cluster_security_group_id" {
+  description = "ID of the cluster security group"
+  value       = module.eks[0].cluster_security_group_id
+}
+
+################################################################################
+# Node Security Group
+################################################################################
+
+output "node_security_group_arn" {
+  description = "Amazon Resource Name (ARN) of the node shared security group"
+  value       = module.eks[0].node_security_group_arn
+}
 output "node_security_group_id" {
   value = module.eks[0].node_security_group_id
 }

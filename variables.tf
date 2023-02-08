@@ -4,11 +4,25 @@ variable "cluster_id" {
   default     = "hcp-vault"
 }
 
+variable "eks_instance_types" {
+  type        = list
+  description = "The node size of your EKS cluster"
+  #default     = ["t3a.medium"]
+  default     = ["t2.small"]
+}
+
+variable "hcp_vault_cluster_id" {
+  type        = string
+  description = "The name of your HCP Vault cluster"
+  default     = "hcp-vault"
+}
+
 variable "vault_internal_addr" {
   type        = string
   description = "The internal url of your HCP vault cluster"
   default     = "https://MyVault.private.vault.f4cfade2-df28-47f2-a365-56gb2a62d8c5.aws.hashicorp.cloud:8200"
 }
+
 variable "hvn_cidr_block" {
   type        = string
   description = "The CIDR range to create the HCP HVN with"
