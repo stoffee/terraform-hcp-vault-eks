@@ -1,5 +1,6 @@
 examples*
 remote_backend.tf
+apiVersion
 #k8s
 kubeconfig*
 *kubeconfig*
