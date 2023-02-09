@@ -16,7 +16,7 @@ kubeconfig*
 *.json
 *.exe
 *.ppk
-*.svg
+#*.svg
 
 # OS X files
 .history
