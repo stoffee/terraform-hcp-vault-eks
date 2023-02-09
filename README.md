@@ -45,12 +45,14 @@ Please check the [examples](https://github.com/stoffee/terraform-hcp-vault-eks/t
    export AWS_SECRET_ACCESS_KEY=
    ```
 
-3. Rename sample.auto.tfvars_example to sample.auto.tfvars and edit to customize the install, then initialize and apply the Terraform configuration to get a customized environment. Ensure you view the plan details and approve with a yes.
+3. Rename sample.auto.tfvars_example to sample.auto.tfvars and edit to customize the install.   Edit the sample.auto.tfvars to your liking
 
   ```bash
   cp sample.auto.tfvars_example sample.auto.tfvars
   ```
-  Edit the sample.auto.tfvars to your liking
+
+  
+4. Initialize and apply the Terraform configuration to get a customized environment. Ensure you view the plan details and approve with a yes.
   ```bash
   terraform init
   terraform apply
@@ -82,7 +84,7 @@ The EKS cluster can be accessed via the terraform output `kubeconfig_filename`, 
 terraform output --raw kubeconfig_filename
 ```
 
-#### Demo Application
+## Demo Application
 
 **Warning**: This application is publicly accessible, make sure to delete the Kubernetes resources associated to the application when done.
 
@@ -205,7 +207,7 @@ kubectl apply -f files/product.yaml
 kubectl get pods
 ```
 
-# Test the app retrieves coffee info
+#### Test the app retrieves coffee info
 ```bash
 kubectl port-forward service/product 9090 &
 
