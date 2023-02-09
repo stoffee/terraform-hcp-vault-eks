@@ -60,13 +60,16 @@ module "eks" {
   }
 
   eks_managed_node_groups = {
-    ubettawerk = {
+    node_group_01 = {
       name_prefix = random_pet.server.id
       instance_types = var.eks_instance_types
 
-      desired_capacity = 3
-      max_capacity     = 3
-      min_capacity     = 2
+      desired_size = 3
+      max_size     = 3
+      min_size     = 2
+      #desired_capacity = 3
+      #max_capacity     = 3
+      #min_capacity     = 2
     }
   }
 }
@@ -92,7 +95,7 @@ resource "hcp_vault_cluster" "vault_cluster_existing_hvn" {
 }
 */
 
-resource "hcp_vault_cluster" "vault_cluster_new"{
+resource "hcp_vault_cluster" "new_vault_cluster"{
   count = var.deploy_vault_cluster ? 1 : 0
   #hvn_id     = data.hcp_hvn.existing[0].hvn_id
   hvn_id          = var.deploy_hvn ? hcp_hvn.new[0].hvn_id : data.hcp_hvn.existing[0].hvn_id
@@ -101,9 +104,13 @@ resource "hcp_vault_cluster" "vault_cluster_new"{
   public_endpoint = true
 }
 
+data "hcp_vault_cluster" "existing_vault_cluster" {
+  count      = var.deploy_vault_cluster ? 0 : 1
+  cluster_id = var.hcp_vault_cluster_id
+}
+
 resource "hcp_vault_cluster_admin_token" "vault_admin_token" {
-  count      = var.deploy_vault_cluster ? 1 : 0
-  cluster_id = hcp_vault_cluster.vault_cluster_new[0].cluster_id
+  cluster_id = var.deploy_vault_cluster ? hcp_vault_cluster.new_vault_cluster[0].cluster_id : data.hcp_vault_cluster.existing_vault_cluster[0].cluster_id
 }
 
 data "aws_arn" "peer" {
@@ -149,7 +156,8 @@ resource "aws_vpc_peering_connection_accepter" "peer" {
   auto_accept               = true
 }
 
-resource "helm_release" "vault" {
+resource "helm_release" "new_vault" {
+  count  = var.deploy_vault_cluster ? 1 : 0
   name       = "vault"
   repository = "https://helm.releases.hashicorp.com"
   chart      = "vault"
@@ -159,7 +167,7 @@ resource "helm_release" "vault" {
   values = [<<EOF
   injector:
    enabled: true
-   externalVaultAddr: ${hcp_vault_cluster.vault_cluster_new[0].vault_private_endpoint_url}
+   externalVaultAddr: ${hcp_vault_cluster.new_vault_cluster[0].vault_private_endpoint_url}
   EOF
   ]
 */
@@ -167,7 +175,32 @@ resource "helm_release" "vault" {
   values = [<<EOF
   injector:
    enabled: true
-   externalVaultAddr: ${hcp_vault_cluster.vault_cluster_new[0].vault_public_endpoint_url}
+   externalVaultAddr: ${hcp_vault_cluster.new_vault_cluster[0].vault_public_endpoint_url}
   EOF
   ]
+}
+
+resource "helm_release" "existing_vault" {
+  count  = var.deploy_vault_cluster ? 0 : 1
+  name       = "vault"
+  repository = "https://helm.releases.hashicorp.com"
+  chart      = "vault"
+  depends_on = [hcp_vault_cluster_admin_token.vault_admin_token]
+  /*
+  # private vault enpoint
+  values = [<<EOF
+  injector:
+   enabled: true
+   externalVaultAddr: ${hcp_vault_cluster.new_vault_cluster[0].vault_private_endpoint_url}
+  EOF
+  ]
+*/
+  # public vault enpoint
+  values = [<<EOF
+  injector:
+   enabled: true
+   externalVaultAddr: ${data.hcp_vault_cluster.existing_vault_cluster[0].vault_public_endpoint_url}
+  EOF
+  ]
+
 }

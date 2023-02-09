@@ -29,6 +29,7 @@ Please check the [examples](https://github.com/stoffee/terraform-hcp-vault-eks/t
 
    Switch back to HCP to click the icon for the <strong>Client Secret</strong> to copy it into your Clipboard.
 
+
    In your Terminal, construct the command from your Clipboard, such as:
 
    ```
@@ -46,9 +47,14 @@ Please check the [examples](https://github.com/stoffee/terraform-hcp-vault-eks/t
 
 3. Rename sample.auto.tfvars_example to sample.auto.tfvars and edit to customize the install, then initialize and apply the Terraform configuration to get a customized environment. Ensure you view the plan details and approve with a yes.
 
-   ```
-   terraform init && terraform apply
-   ```
+  ```bash
+  cp sample.auto.tfvars_example sample.auto.tfvars
+  ```
+  Edit the sample.auto.tfvars to your liking
+  ```bash
+  terraform init
+  terraform apply
+  ```
 
 ### Accessing the Deployment
 
