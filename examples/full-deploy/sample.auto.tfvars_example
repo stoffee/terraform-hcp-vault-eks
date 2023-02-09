@@ -1,0 +1,8 @@
+hvn_id               = "hcp-hvn"
+deploy_vault_cluster = true
+hvn_region           = "us-west-2"
+vpc_region           = "us-west-2"
+cluster_id           = "my-vault"
+deploy_hvn           = true
+deploy_eks_cluster   = true
+vpc_region           = "us-west-2"

@@ -27,8 +27,13 @@ export AWS_SECRET_ACCESS_KEY=
 
 1. Rename sample.auto.tfvars_example to sample.auto.tfvars and edit to customize the install, then initialize and apply the Terraform configuration to get a customized environment. Ensure you view the plan details and approve with a yes.
 
+```bash
+cp sample.auto.tfvars_example sample.auto.tfvars
 ```
-terraform init && terraform apply
+Edit the sample.auto.tfvars to your liking
+```bash
+terraform init
+terraform apply
 ```
 
 ### Accessing the Deployment
