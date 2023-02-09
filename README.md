@@ -11,21 +11,40 @@ Please check the [examples](https://github.com/stoffee/terraform-hcp-vault-eks/t
 
 ### Prerequisites
 
-1. Create a HCP Service Key and set the required environment variables. Log into the HCP portal and go to IAM/Service principals and create a new Service principal and a key under the new Service principal. Then apply the environment variables with the output from creating the key.
-https://portal.cloud.hashicorp.com/access/service-principals
+1. Set HCP environment variables: Log into the HCP portal at:
+
+   <a target="_blank" href="https://portal.cloud.hashicorp.com/access/service-principals">https://portal.cloud.hashicorp.com/access/service-principals</a>
+   
+   Then at the "Access control (IAM)" menu item under your org, "Service principals", "Create a new Service principal", specify a new Name (for example, JohnDoe) for a Contributor, and Save. 
+   
+   Click "Generate key".
+   
+   Click the icon for the <strong>Client ID</strong> to copy it into your Clipboard.
+   
+   In your Terminal, construct the command from your Clipboard, such as:
 
    ```
-   export HCP_CLIENT_ID=
-   export HCP_CLIENT_SECRET=
+   export HCP_CLIENT_ID=johndoe-189296@abcdef12-f178-45dd-a22d-e04643fecc7b
    ```
 
-1. Export your AWS Account credentials, as defined by the AWS Terraform provider
+   Switch back to HCP to click the icon for the <strong>Client Secret</strong> to copy it into your Clipboard.
+
+   In your Terminal, construct the command from your Clipboard, such as:
+
+   ```
+   export HCP_CLIENT_SECRET=abcdef123mPwF7VIOuHDdthq42V0fUQBLbq-ZxadCMT5WaJW925bbXN9UJ9zBut9
+   ```
+
+   Then in your Terminal, apply the environment variables with the output from creating the key.
+
+2. Export your AWS Account credentials (such as from Doormat), as defined by the AWS Terraform provider:
+
    ```
    export AWS_ACCESS_KEY_ID=
    export AWS_SECRET_ACCESS_KEY=
    ```
 
-1. Rename sample.auto.tfvars_example to sample.auto.tfvars and edit to customize the install, then initialize and apply the Terraform configuration to get a customized environment. Ensure you view the plan details and approve with a yes.
+3. Rename sample.auto.tfvars_example to sample.auto.tfvars and edit to customize the install, then initialize and apply the Terraform configuration to get a customized environment. Ensure you view the plan details and approve with a yes.
 
    ```
    terraform init && terraform apply
