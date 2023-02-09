@@ -31,5 +31,7 @@ module "hcp-eks" {
    Follow the steps in the main<a target="_blank" href=https://github.com/stoffee/terraform-hcp-vault-eks/tree/main#accessing-the-deployment> README</a>.
 
 ## deployment graph
-<svg>graph.normal.svg</svg>
-<svg>graph.cycles.svg</svg>
+![Alt text](Normal Graph)
+<img src="./graph.normal.svg">
+![Alt text](Cycles Graph)
+<img src="./graph.cycles.svg">
