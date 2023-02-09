@@ -11,30 +11,50 @@ Please check the [examples](https://github.com/stoffee/terraform-hcp-vault-eks/t
 
 ### Prerequisites
 
-1. Create a HCP Service Key and set the required environment variables. Log into the HCP portal and go to IAM/Service principals and create a new Service principal and a key under the new Service principal. Then apply the environment variables with the output from creating the key.
-https://portal.cloud.hashicorp.com/access/service-principals
+1. Set HCP environment variables: Log into the HCP portal at:
 
-```
-export HCP_CLIENT_ID=
-export HCP_CLIENT_SECRET=
-```
+   <a target="_blank" href="https://portal.cloud.hashicorp.com/access/service-principals">https://portal.cloud.hashicorp.com/access/service-principals</a>
+   
+   Then at the "Access control (IAM)" menu item under your org, "Service principals", "Create a new Service principal", specify a new Name (for example, JohnDoe) for a Contributor, and Save. 
+   
+   Click "Generate key".
+   
+   Click the icon for the <strong>Client ID</strong> to copy it into your Clipboard.
+   
+   In your Terminal, construct the command from your Clipboard, such as:
 
-1. Export your AWS Account credentials, as defined by the AWS Terraform provider
-```
-export AWS_ACCESS_KEY_ID=
-export AWS_SECRET_ACCESS_KEY=
-```
+   ```
+   export HCP_CLIENT_ID=johndoe-189296@abcdef12-f178-45dd-a22d-e04643fecc7b
+   ```
 
-1. Rename sample.auto.tfvars_example to sample.auto.tfvars and edit to customize the install, then initialize and apply the Terraform configuration to get a customized environment. Ensure you view the plan details and approve with a yes.
+   Switch back to HCP to click the icon for the <strong>Client Secret</strong> to copy it into your Clipboard.
 
-```bash
-cp sample.auto.tfvars_example sample.auto.tfvars
-```
-Edit the sample.auto.tfvars to your liking
-```bash
-terraform init
-terraform apply
-```
+
+   In your Terminal, construct the command from your Clipboard, such as:
+
+   ```
+   export HCP_CLIENT_SECRET=abcdef123mPwF7VIOuHDdthq42V0fUQBLbq-ZxadCMT5WaJW925bbXN9UJ9zBut9
+   ```
+
+   Then in your Terminal, apply the environment variables with the output from creating the key.
+
+2. Export your AWS Account credentials (such as from Doormat), as defined by the AWS Terraform provider:
+
+   ```
+   export AWS_ACCESS_KEY_ID=
+   export AWS_SECRET_ACCESS_KEY=
+   ```
+
+3. Rename sample.auto.tfvars_example to sample.auto.tfvars and edit to customize the install, then initialize and apply the Terraform configuration to get a customized environment. Ensure you view the plan details and approve with a yes.
+
+  ```bash
+  cp sample.auto.tfvars_example sample.auto.tfvars
+  ```
+  Edit the sample.auto.tfvars to your liking
+  ```bash
+  terraform init
+  terraform apply
+  ```
 
 ### Accessing the Deployment
 
@@ -89,11 +109,11 @@ Alternatively you can find this info in the HCP portal:
 
 5. Construct this line in Bash from your Clipboard contents from above.
    
-```bash
-export VAULT_ADDR=https://my-vault-public-vault-c6443333.9d787275.z1.hashicorp.cloud:8200
-export VAULT_TOKEN=
-export VAULT_NAMESPACE=admin
-```
+   ```bash
+   export VAULT_ADDR=https://my-vault-public-vault-c6443333.9d787275.z1.hashicorp.cloud:8200
+   export VAULT_TOKEN=
+   export VAULT_NAMESPACE=admin
+   ```
 
 #### setup cli auth for kubectl 
 ```bash
