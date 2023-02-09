@@ -15,7 +15,7 @@
 ```hcl
 module "hcp-eks" {
   source               = "stoffee/vault-eks/hcp"
-  version              = "~> 0.0.4"
+  version              = "~> 0.0.6"
   cluster_id           = "eks-cluster-name"
   deploy_hvn           = true
   hvn_id               = "my-hcp-hvn-name"

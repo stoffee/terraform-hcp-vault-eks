@@ -1,7 +1,7 @@
 module "hcp-eks" {
   #source  = "../../"
   source               = "stoffee/vault-eks/hcp"
-  version              = "~> 0.0.4"
+  version              = "~> 0.0.6"
   cluster_id           = var.cluster_id
   deploy_hvn           = var.deploy_hvn
   hvn_id               = var.hvn_id

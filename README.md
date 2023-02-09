@@ -5,7 +5,7 @@ with an AWS EKS cluster and VPC peering. This module can also be customized to o
 
 ## HCP Vault EKS Module Examples
 
-Please check the [examples](https://github.com/stoffee/terraform-hcp-vault-eks/tree/primary/examples) for example deployments.
+Please check the <a target="_blank" href=https://github.com/stoffee/terraform-hcp-vault-eks/tree/primary/examples>[examples]</a> for example deployments.
 
 ## Deployment
 
@@ -88,7 +88,7 @@ terraform output --raw kubeconfig_filename
 
 **Warning**: This application is publicly accessible, make sure to delete the Kubernetes resources associated to the application when done.
 
-Export your Vault Account credentials from terraform output
+### Export your Vault Account credentials from terraform output
 ```bash
 export VAULT_ADDR=$(terraform output --raw vault_public_url)
 export VAULT_TOKEN=$(terraform output --raw vault_root_token)
@@ -97,9 +97,9 @@ export VAULT_namespace=admin
 
 Alternatively you can find this info in the HCP portal:
 
-1.  On a browser login into HCP Portal
+1.  On a browser login into <a target="_blank" href=https://portal.cloud.hashicorp.com>HCP Portal</a>
 
-    https://portal.cloud.hashicorp.com
+    <a target="_blank" href=https://portal.cloud.hashicorp.com>https://portal.cloud.hashicorp.com</a>
 
 2.  Click the name of your cluster (such as "my-vault").
 3.  Click "Private" link at the right of "Cluster URLs" to obtain a URL such as this in your Clipboard:
@@ -117,12 +117,13 @@ Alternatively you can find this info in the HCP portal:
    export VAULT_NAMESPACE=admin
    ```
 
-#### setup cli auth for kubectl 
-```bash
-aws eks --region us-west-2 update-kubeconfig --name $(terraform output --raw eks_cluster_name)
-```
+### setup cli auth for kubectl 
+    ```bash
+    aws eks --region us-west-2 update-kubeconfig --name $(terraform output --raw eks_cluster_name)
+    ```
 
-#### Configure Kube auth method for Vault
+### Configure Kube auth method for Vault
+1. First grab the kube auth info adn stick it in ENVVARS
 ```bash
 export TOKEN_REVIEW_JWT=$(kubectl get secret \
    $(kubectl get serviceaccount vault -o jsonpath='{.secrets[0].name}') \
@@ -138,55 +139,68 @@ echo KUBE_CA_CERT
 
 export KUBE_HOST=$(kubectl config view --raw --minify --flatten \
    -o jsonpath='{.clusters[].cluster.server}')
-# example: KUBE_HOST=https://6677B3488C2D5C0162A558C881AF9922.gr7.us-west-2.eks.amazonaws.com
+
 echo KUBE_HOST
-
-vault auth enable kubernetes
-
-vault write auth/kubernetes/config \
-   token_reviewer_jwt="$TOKEN_REVIEW_JWT" \
-   kubernetes_host="$KUBE_HOST" \
-   kubernetes_ca_cert="$KUBE_CA_CERT"
 ```
 
-#### Deploy Postgres
-```bash
-kubectl apply -f files/postgres.yaml
-```
+### Continue with configuration of Vault and deployment of Postgres, Vault agent, and Hashicups app
+2. Enable the auth method and write the Kubernetes auth info into Vault
+    ```bash
+    vault auth enable kubernetes
+    ```
+    ```bash
+    vault write auth/kubernetes/config \
+    token_reviewer_jwt="$TOKEN_REVIEW_JWT" \
+    kubernetes_host="$KUBE_HOST" \
+    kubernetes_ca_cert="$KUBE_CA_CERT"
+    ```
 
-##### Check that Postgres is running before moving on
-```bash
-kubectl get pods
-```
-##### Grab the Postgres IP and then configure the Vault DB secrets engine
-```bash
-export POSTGRES_IP=$(kubectl get service -o jsonpath='{.status.loadBalancer.ingress[0].hostname}' \
-   postgres)
+3. Deploy Postgres
+    ```bash 
+    kubectl apply -f files/postgres.yaml
+    ```
 
-echo $POSTGRES_IP
+4. Check that Postgres is running before moving on
+    ```bash
+    kubectl get pods
+    ```
 
-vault secrets enable database
+5. Grab the Postgres IP and then configure the Vault DB secrets engine
+    ```bash
+    export POSTGRES_IP=$(kubectl get service -o jsonpath='{.status.loadBalancer.ingress[0].hostname}' postgres)
 
-vault write database/config/products \
-    plugin_name=postgresql-database-plugin \
-    allowed_roles="*" \
-    connection_url="postgresql://{{username}}:{{password}}@${POSTGRES_IP}:5432/products?sslmode=disable" \
-    username="postgres" \
-    password="password"
+    echo $POSTGRES_IP
+    ```
 
-vault write database/roles/product \
-    db_name=products \
-    creation_statements="CREATE ROLE \"{{name}}\" WITH LOGIN PASSWORD '{{password}}' VALID UNTIL '{{expiration}}'; \
+6. Enable DB secrets
+    ```bash
+    vault secrets enable database
+    ```
+
+7. Write the Vault configuration for the postgresDB deployed earlier
+    ```bash
+    vault write database/config/products \
+        plugin_name=postgresql-database-plugin \
+       allowed_roles="*" \
+       connection_url="postgresql://{{username}}:{{password}}@${POSTGRES_IP}:5432/products?sslmode=disable" \
+       username="postgres" \
+       password="password"
+
+    vault write database/roles/product \
+       db_name=products \
+       creation_statements="CREATE ROLE \"{{name}}\" WITH LOGIN PASSWORD '{{password}}' VALID UNTIL '{{expiration}}'; \
         GRANT SELECT ON ALL TABLES IN SCHEMA public TO \"{{name}}\";" \
-    revocation_statements="ALTER ROLE \"{{name}}\" NOLOGIN;"\
-    default_ttl="1h" \
-    max_ttl="24h"
+       revocation_statements="ALTER ROLE \"{{name}}\" NOLOGIN;"\
+       default_ttl="1h" \
+       max_ttl="24h"
+    ```
 
+8. Ensure we can create credentials on the postgresDB with Vault
+    ```bash
+    vault read database/creds/product
+    ```
 
-vault read database/creds/product
-```
-
-#### Create policy in Vault
+9. Create policy in Vault
 ```bash
 vault policy write product files/product.hcl
 
@@ -197,17 +211,17 @@ vault write auth/kubernetes/role/product \
     ttl=1h
 ```
 
-#### Deploy the product app
+9. Deploy the product app
 ```bash
 kubectl apply -f files/product.yaml
 ```
 
-##### Check the product app is running before moving on
+10.  Check the product app is running before moving on
 ```bash
 kubectl get pods
 ```
 
-#### Test the app retrieves coffee info
+11. Test the app retrieves coffee info
 ```bash
 kubectl port-forward service/product 9090 &
 
