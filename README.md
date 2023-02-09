@@ -117,13 +117,14 @@ Alternatively you can find this info in the HCP portal:
    export VAULT_NAMESPACE=admin
    ```
 
-### setup cli auth for kubectl 
+### Setup cli auth for kubectl through awscli 
     ```bash
     aws eks --region us-west-2 update-kubeconfig --name $(terraform output --raw eks_cluster_name)
+    terraform output --raw eks_cluster_name
     ```
 
 ### Configure Kube auth method for Vault
-1. First grab the kube auth info adn stick it in ENVVARS
+1. First grab the kube auth info and stick it in ENVVARS
 ```bash
 export TOKEN_REVIEW_JWT=$(kubectl get secret \
    $(kubectl get serviceaccount vault -o jsonpath='{.secrets[0].name}') \
@@ -135,12 +136,12 @@ export KUBE_CA_CERT=$(kubectl get secret \
    $(kubectl get serviceaccount vault -o jsonpath='{.secrets[0].name}') \
    -o jsonpath='{ .data.ca\.crt }' | base64 --decode)
 
-echo KUBE_CA_CERT
+echo $KUBE_CA_CERT
 
 export KUBE_HOST=$(kubectl config view --raw --minify --flatten \
    -o jsonpath='{.clusters[].cluster.server}')
 
-echo KUBE_HOST
+echo $KUBE_HOST
 ```
 
 ### Continue with configuration of Vault and deployment of Postgres, Vault agent, and Hashicups app
