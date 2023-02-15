@@ -1,7 +1,9 @@
 # HCP Vault EKS Module
 
-This repo contains a Terraform module that stands up a full deployment of a HCP Vault cluster
+This repo contains a Terraform module creates a full deployment of a HCP Vault cluster
 with an AWS EKS cluster and VPC peering. This module can also be customized to only deploy what you need.
+
+This automates <a target="_blank" href="https://developer.hashicorp.com/vault/tutorials/cloud/get-started-vault">manual steps</a>.
 
 ## Deployment
 
@@ -75,11 +77,21 @@ Below are steps to obtain the values above:
     
     ### Select Example Deploy
  
-16. Use your favorite editor to navigate into the <tt>examples</tt> folder:
+16. Obtain a copy of the repository onto your laptop:
 
-    Select <tt>full-deploy</tt>
+    ```bash
+    git clone git@github.com:stoffee/terraform-hcp-vault-eks.git
+    cd terraform-hcp-vault-eks
+    ```
 
-17. cd into one of the <a target="_blank" href=https://github.com/stoffee/terraform-hcp-vault-eks/tree/primary/examples>[examples]</a> example deployments.
+17. Navigate into one of the <a target="_blank" href=https://github.com/stoffee/terraform-hcp-vault-eks/tree/primary/examples>[example]</a> deployment folders:
+
+    ```bash
+    cd examples
+    cd full-deploy
+    ```
+
+    NOTE: The <tt>eks-hvn-only-deploy</tt> is ???
 
     <a name="Edit_tfvars"></a>
 
@@ -92,7 +104,7 @@ Below are steps to obtain the values above:
     ```
     NOTE: The file <tt>sample.auto.tfvars</tt> is specified in the repo's <tt>.gitignore</tt> file so it doesn't get uploaded into GitHub.
 
-19. Edit the file to customize your install.
+19. Edit the file to customize what you want installed:
 
     <pre>cluster_id = "blue-blazer"
     deploy_hvn = true
