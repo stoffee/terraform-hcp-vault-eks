@@ -119,12 +119,13 @@ Most enterprises allocate AWS dynamically for a brief time (such as HashiCorp em
     
     CAUTION: Having different <tt>hvn_region</tt> and <tt>vpc_region</tt> will result in expensive AWS cross-region data access fees and slower performance.
 
+    After deploymenent the <tt>cluster_id</tt> is used to automatically construct the <tt>eks_cluster_name</tt> such as "brown-blazer-eks".
 
     <a name="SetAWSEnv"></a>
 
     ### Set AWS environment variables:
 
-24. In the Terminal window you will use to run Terraform, set the AWS account credentials used to build your Vault instance, such as:
+22. In the Terminal window you will use to run Terraform, set the AWS account credentials used to build your Vault instance, such as:
     ```bash
     export AWS_ACCESS_KEY_ID=ZXYRQPONMLKJIHGFEDCBA
     export AWS_SECRET_ACCESS_KEY=abcdef12341uLY5oZCi5ILlWqyY++QpWEYnxz62w
@@ -134,7 +135,7 @@ Most enterprises allocate AWS dynamically for a brief time (such as HashiCorp em
 
     ### Run Terraform to Deploy
 
-25. In the same Terminal window as the above step (or within a CI/CD workflow), run the Terraform HCL to create the environment within AWS based on specifications in <tt>sample.auto.tfvars</tt>:
+23. In the same Terminal window as the above step (or within a CI/CD workflow), run the Terraform HCL to create the environment within AWS based on specifications in <tt>sample.auto.tfvars</tt>:
     ```bash
     terraform init
     terraform plan
@@ -174,16 +175,25 @@ Most enterprises allocate AWS dynamically for a brief time (such as HashiCorp em
     vault_root_token = &LT;sensitive&LT;
     </pre>
 
-    A sample time output shows 22 minutes:
+    A sample time output shows 22 minutes 11 seconds total clock time:
 
     <pre>terraform apply -auto-approve  7.71s user 3.53s system 0% cpu 22:11.66 total</pre>
+
+24. One helpful design feature of Terraform HCL is that it's "declarative". So <tt>terraform apply</tt> can be run again. A sample response if no changes need to be made:
+
+    ```bash
+    No changes. Your infrastructure matches the configuration.
+    Terraform has compared your real infrastructure against your configuration and found no differences, so no changes are needed.
+    ```
+
+    NOTE: Terraform verifies the status of resources in the cloud, but does not verify the correctness of API calls to each service.
 
     <a name="AccessVault"></a>
 
     ### Obtain HCP Vault GUI URL:
 
-26. Be at the browser window you would like to add a new tab containing the Vault UI.
-27. Open a browser window to your HCP Vault cluster URL obtained automatically (on a Mac):
+25. Be at the browser window you would like to add a new tab containing the Vault UI.
+26. Open a browser window to your HCP Vault cluster URL obtained automatically (on a Mac):
 
     ```bash
     open $(terraform output --raw vault_public_url)
@@ -196,9 +206,9 @@ Most enterprises allocate AWS dynamically for a brief time (such as HashiCorp em
 
     <a target="_blank" href="https://res.cloudinary.com/dcajqrroq/image/upload/v1675396720/vault-hcp-signin-468x397_g5twps.jpg"><img width="400" src="https://res.cloudinary.com/dcajqrroq/image/upload/v1675396720/vault-hcp-signin-468x397_g5twps.jpg"></a>
 
-28. PROTIP: Optionally, save the URL in your browser for quicker access in the future.
+27. PROTIP: Optionally, save the URL in your browser for quicker access in the future.
 
-29. Copy the admin Token into your Clipboard for "Sign in to Vault" (on a Mac). 
+28. Copy the admin Token into your Clipboard for "Sign in to Vault" (on a Mac). 
     ```bash
     terraform output --raw vault_root_token | pbcopy
     ```
@@ -206,8 +216,15 @@ Most enterprises allocate AWS dynamically for a brief time (such as HashiCorp em
 
     CAUTION: Do not share this token with others. Create a separate account for each user.
 
-30. Click in the <strong>Token</strong> field within the "Sign in" form, then paste the token.
-31. Click the blue "Sign in".
+29. Click <strong>Token</strong> selection under the "Method" heading within the "Sign in" form.
+
+    NOTE: A generated token is one of <a target="_blank" href="https://developer.hashicorp.com/vault/docs/auth">many Authentication Methods</a> supported by Vault.
+
+29. Click in the <strong>Token</strong> field within the "Sign in" form, then paste the token.
+
+30. Click the blue "Sign in".
+
+    NOTE: As the Administrator, you have, by default, access to Vault's <a target="_blank" href="https://developer.hashicorp.com/vault/docs/secrets/cubbyhole">>cubbyhole/</a>, one of the industry' widest support of <a target="_blank" href="https://developer.hashicorp.com/vault/docs/secrets">Secrets Engines</a>.
 
     <a name="ConfirmHCP"></a>
 
@@ -215,10 +232,10 @@ Most enterprises allocate AWS dynamically for a brief time (such as HashiCorp em
 
     Switch back to the HCP screen to confirm what has been built:
 
-32. At the <a href="https://portal.cloud.hashicorp.com/">HCP dashboard</a>,
-33. Click the blue "View Vault".
-34. Click the Vault ID text -- the text above "Running" for the <strong>Overview</strong> page for your Vault instance managed by HCP.
-35. PROTIP: For quicker access in the future, save the URL in your browser bookmarks. Let's examine the <strong>Cluster Details</strong> such as this:
+31. At the <a href="https://portal.cloud.hashicorp.com/">HCP dashboard</a>,
+32. Click the blue "View Vault".
+33. Click the Vault ID text -- the text above "Running" for the <strong>Overview</strong> page for your Vault instance managed by HCP.
+34. PROTIP: For quicker access in the future, save the URL in your browser bookmarks. Let's examine the <strong>Cluster Details</strong> such as this:
 
     <a target="_blank" href="https://res.cloudinary.com/dcajqrroq/image/upload/v1676446677/hcp-vault-dev-320x475_gh8olg.jpg"><img src="https://res.cloudinary.com/dcajqrroq/image/upload/v1676446677/hcp-vault-dev-320x475_gh8olg.jpg"></a>
     
