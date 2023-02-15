@@ -9,9 +9,10 @@ A. <a href="#SetHCPEnv">Set HCP environment variables</a><br />
 B. <a href="#SetAWSEnv">Set AWS environment variables</a><br />
 C. <a href="#SelectExample">Select Example Deploy</a><br />
 D. <a href="#Edit_tfvars">Edit sample.auto.tfvars</a><br />
-E. <a href="#DeployTF">Run the Terraform to Deploy</a><br />
-F. <a href="#AccessVault">Access HCP Vault GUI</a><br />
-G. <a href="#AccessDemoApp">Use Vault in Demo App</a><br />
+E. <a href="#DeployTF">Run Terraform to Deploy</a><br />
+F. <a href="#ConfirmHCP">Confirm HCP</a><br />
+G. <a href="#AccessVault">Access HCP Vault GUI</a><br />
+H. <a href="#AccessDemoApp">Use Vault in Demo App</a><br />
 
 <hr />
 
@@ -74,8 +75,11 @@ Below are steps to obtain the values above:
     
     ### Select Example Deploy
  
-16.  Use your favorite editor to navigate into the <tt>examples</tt> folder.
-17.  cd into one of the <a target="_blank" href=https://github.com/stoffee/terraform-hcp-vault-eks/tree/primary/examples>[examples]</a> example deployments.
+16. Use your favorite editor to navigate into the <tt>examples</tt> folder:
+
+    Select <tt>full-deploy</tt>
+
+17. cd into one of the <a target="_blank" href=https://github.com/stoffee/terraform-hcp-vault-eks/tree/primary/examples>[examples]</a> example deployments.
 
     <a name="Edit_tfvars"></a>
 
@@ -85,12 +89,26 @@ Below are steps to obtain the values above:
 
     ```bash
     cp sample.auto.tfvars_example sample.auto.tfvars
-    ```  
+    ```
+    NOTE: The file <tt>sample.auto.tfvars</tt> is specified in the repo's <tt>.gitignore</tt> file so it doesn't get uploaded into GitHub.
+
 19. Edit the file to customize your install.
+
+    <pre>cluster_id = "blue-blazer"
+    deploy_hvn = true
+    hvn_id               = "eks-hvn"
+    hvn_region           = "us-west-2"
+    deploy_vault_cluster = true
+    # uncomment this if setting deploy_vault_cluster to false for an existing vault cluster
+    #hcp_vault_cluster_id = "vault-mycompany-io"
+    make_vault_public    = true
+    deploy_eks_cluster   = true
+    vpc_region           = "us-west-2"
+    </pre>
     
     <a name="DeployTF"></a>
 
-    ### Run the Terraform to Deploy
+    ### Run Terraform to Deploy
 
 20. Initialize and apply the Terraform configuration to get a customized environment. Ensure you view the plan details and approve with a yes.
 
@@ -131,12 +149,20 @@ Below are steps to obtain the values above:
     vault_root_token = &LT;sensitive&LT;
     </pre>
 
+    <a name="ConfirmHCP"></a>
+
+    ### Confirm HCP
+
+21. Switch back to the HCP screen to confirm what has been built:
+
+    <a target="_blank" href="https://res.cloudinary.com/dcajqrroq/image/upload/v1676446677/hcp-vault-dev-320x475_gh8olg.jpg"><img src="https://res.cloudinary.com/dcajqrroq/image/upload/v1676446677/hcp-vault-dev-320x475_gh8olg.jpg"></a>
+    
 
     <a name="AccessVault"></a>
 
     ### Access HCP Vault GUI:
 
-1.  On a Mac, open a browser window to your HCP Vault cluster:
+21. Open a browser window to your HCP Vault cluster (on a Mac):
 
     ```bash
     open $(terraform output --raw vault_public_url)
@@ -146,7 +172,7 @@ Below are steps to obtain the values above:
     open $(terraform output --raw vault_private_url)
     ```
 
-2.  On a Mac, obtain the Token to Sign in to Vault:
+22. Obtain the Token to Sign in to Vault (on a Mac):
 
     ```bash
     terraform output --raw vault_root_token | pbcopy
@@ -156,12 +182,12 @@ Below are steps to obtain the values above:
     
     ### Access the EKS Cluster:
 
-3.  Obtain the contents of a kubeconfig file into your Clipboard:
+23. Obtain the contents of a kubeconfig file into your Clipboard:
 
     ```bash
     terraform output --raw kubeconfig_filename | pbcopy
     ```
-4.  Paste from Clipboard and remove the file path to yield:
+24. Paste from Clipboard and remove the file path to yield:
 
     <pre>apiVersion: v1
     kind: ConfigMap
@@ -177,7 +203,7 @@ Below are steps to obtain the values above:
             - system:nodes
     </pre>
 
-4.  setting the `KUBECONFIG` environment variable ???
+25. setting the `KUBECONFIG` environment variable ???
 
     <a name="AccessDemoApp"></a>
 
@@ -185,7 +211,7 @@ Below are steps to obtain the values above:
 
     **Warning**: This application is publicly accessible, make sure to delete the Kubernetes resources associated with the application when done.
 
-1.  Set your Vault Account credentials dynamically using your connection to HCP by copying these commands and running them on your Terminal:
+26. Set your Vault Account credentials dynamically using your connection to HCP by copying these commands and running them on your Terminal:
 
     ```bash
     export VAULT_ADDR=$(terraform output --raw vault_public_url)
@@ -193,7 +219,7 @@ Below are steps to obtain the values above:
     export VAULT_namespace=admin
     ```
 
-2.  Use the values to work with secrets from your Vault client program or custom application.
+27. Use the values to work with secrets from your Vault client program or custom application.
 
     See [HashiCorp's Vault tutorials](https://developer.hashicorp.com/vault/tutorials?optInFrom=learn)
 
