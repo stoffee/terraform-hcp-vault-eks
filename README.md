@@ -12,12 +12,13 @@ B. <a href="#SelectExample">Select Example Deploy</a><br />
 C. <a href="#Edit_tfvars">Edit sample.auto.tfvars</a><br />
 D. <a href="#SetAWSEnv">Set AWS environment variables</a><br />
 E. <a href="#DeployTF">Run Terraform to Deploy</a><br />
-F. <a href="#ConfirmHCP">Confirm HCP</a><br />
-G. <a href="#AccessVault">Obtain HCP Vault GUI URL</a><br />
-H. <a href="#AccessDemoApp">Access Vault API</a><br />
+F. <a href="#ConfirmAWSGUI">Confirm AWS GUI</a><br />
+G. <a href="#ConfirmHCP">Confirm HCP</a><br />
+H. <a href="#AccessVault">Obtain HCP Vault GUI URL</a><br />
+I. <a href="#AccessDemoApp">Access Vault API</a><br />
 
-I. <a href="#Upgrade">Upgrade for reliability</a><br />
-J. <a href="#DeleteVault">Delete Vault instance</a><br />
+J. <a href="#Upgrade">Upgrade for reliability</a><br />
+K. <a href="#DeleteVault">Delete Vault instance</a><br />
 
 <hr />
 
@@ -119,13 +120,14 @@ Most enterprises allocate AWS dynamically for a brief time (such as HashiCorp em
     
     CAUTION: Having different <tt>hvn_region</tt> and <tt>vpc_region</tt> will result in expensive AWS cross-region data access fees and slower performance.
 
-    After deploymenent the <tt>cluster_id</tt> is used to automatically construct the <tt>eks_cluster_name</tt> such as "brown-blazer-eks".
+    NOTE: During deployment, Terraform HCL prepends the <tt>cluster_id</tt> (such as "brown-blazer") as the prefix to construct resource names such as "brown-blazer-eks" for <tt>eks_cluster_name</tt> and <tt>eks_cluster_arn</tt>; "brown-blazer-vps", etc.
+
 
     <a name="SetAWSEnv"></a>
 
     ### Set AWS environment variables:
 
-22. In the Terminal window you will use to run Terraform, set the AWS account credentials used to build your Vault instance, such as:
+22. In the Terminal window you will use to run Terraform in the next step, set the AWS account credentials used to build your Vault instance, such as:
     ```bash
     export AWS_ACCESS_KEY_ID=ZXYRQPONMLKJIHGFEDCBA
     export AWS_SECRET_ACCESS_KEY=abcdef12341uLY5oZCi5ILlWqyY++QpWEYnxz62w
@@ -188,12 +190,25 @@ Most enterprises allocate AWS dynamically for a brief time (such as HashiCorp em
 
     NOTE: Terraform verifies the status of resources in the cloud, but does not verify the correctness of API calls to each service.
 
+
+    <a name="ConfirmAWSGUI"></a>
+
+    ### Confirm AWS GUI
+
+25. Use the AWS Account, User Name, and Password associated with the <a href="#SetAWSEnv">AWS variables</a> mentioned above to view different services in the AWS Management Console GUI:
+
+    * <a target="_blank" href="https://console.aws.amazon.com/vpc/">VPC</a> (Virtual Private Cloud) with  Subnets, Route Tables, Gateways, Network ACLs, Peering, etc.
+    * <a target="_blank" href="https://console.aws.amazon.com/ec2/">EC2</a> with Security Groups, Elastic IPs, Node Groups, Volumes, etc.
+    * <a target="_blank" href="https://console.aws.amazon.com/eks/">Elastic Kubernetes Service</a>
+    <br /><br />    
+
+
     <a name="AccessVault"></a>
 
     ### Obtain HCP Vault GUI URL:
 
-25. Be at the browser window you would like to add a new tab containing the Vault UI.
-26. Open a browser window to your HCP Vault cluster URL obtained automatically (on a Mac):
+26. Be at the browser window which you want a new tab added to contain the Vault UI.
+27. Open a browser window to your HCP Vault cluster URL obtained automatically (on a Mac):
 
     ```bash
     open $(terraform output --raw vault_public_url)
@@ -206,9 +221,9 @@ Most enterprises allocate AWS dynamically for a brief time (such as HashiCorp em
 
     <a target="_blank" href="https://res.cloudinary.com/dcajqrroq/image/upload/v1675396720/vault-hcp-signin-468x397_g5twps.jpg"><img width="400" src="https://res.cloudinary.com/dcajqrroq/image/upload/v1675396720/vault-hcp-signin-468x397_g5twps.jpg"></a>
 
-27. PROTIP: Optionally, save the URL in your browser for quicker access in the future.
+28. PROTIP: Optionally, save the URL in your browser for quicker access in the future.
 
-28. Copy the admin Token into your Clipboard for "Sign in to Vault" (on a Mac). 
+29. Copy the admin Token into your Clipboard for "Sign in to Vault" (on a Mac). 
     ```bash
     terraform output --raw vault_root_token | pbcopy
     ```
@@ -216,15 +231,16 @@ Most enterprises allocate AWS dynamically for a brief time (such as HashiCorp em
 
     CAUTION: Do not share this token with others. Create a separate account for each user.
 
-29. Click <strong>Token</strong> selection under the "Method" heading within the "Sign in" form.
+30. Click <strong>Token</strong> selection under the "Method" heading within the "Sign in" form.
 
     NOTE: A generated token is one of <a target="_blank" href="https://developer.hashicorp.com/vault/docs/auth">many Authentication Methods</a> supported by Vault.
 
-29. Click in the <strong>Token</strong> field within the "Sign in" form, then paste the token.
+31. Click in the <strong>Token</strong> field within the "Sign in" form, then paste the token.
 
-30. Click the blue "Sign in".
+32. Click the blue "Sign in".
 
     NOTE: As the Administrator, you have, by default, access to Vault's <a target="_blank" href="https://developer.hashicorp.com/vault/docs/secrets/cubbyhole">>cubbyhole/</a>, one of the industry' widest support of <a target="_blank" href="https://developer.hashicorp.com/vault/docs/secrets">Secrets Engines</a>.
+
 
     <a name="ConfirmHCP"></a>
 
@@ -232,10 +248,10 @@ Most enterprises allocate AWS dynamically for a brief time (such as HashiCorp em
 
     Switch back to the HCP screen to confirm what has been built:
 
-31. At the <a href="https://portal.cloud.hashicorp.com/">HCP dashboard</a>,
-32. Click the blue "View Vault".
-33. Click the Vault ID text -- the text above "Running" for the <strong>Overview</strong> page for your Vault instance managed by HCP.
-34. PROTIP: For quicker access in the future, save the URL in your browser bookmarks. Let's examine the <strong>Cluster Details</strong> such as this:
+33. At the <a href="https://portal.cloud.hashicorp.com/">HCP dashboard</a>,
+34. Click the blue "View Vault".
+35. Click the Vault ID text -- the text above "Running" for the <strong>Overview</strong> page for your Vault instance managed by HCP.
+36. PROTIP: For quicker access in the future, save the URL in your browser bookmarks. Let's examine the <strong>Cluster Details</strong> such as this:
 
     <a target="_blank" href="https://res.cloudinary.com/dcajqrroq/image/upload/v1676446677/hcp-vault-dev-320x475_gh8olg.jpg"><img src="https://res.cloudinary.com/dcajqrroq/image/upload/v1676446677/hcp-vault-dev-320x475_gh8olg.jpg"></a>
     
