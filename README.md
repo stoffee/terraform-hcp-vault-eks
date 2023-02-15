@@ -3,13 +3,21 @@
 This repo contains a Terraform module that stands up a full deployment of a HCP Vault cluster
 with an AWS EKS cluster and VPC peering. This module can also be customized to only deploy what you need.
 
-## HCP Vault EKS Module Examples
-
-Please check the <a target="_blank" href=https://github.com/stoffee/terraform-hcp-vault-eks/tree/primary/examples>[examples]</a> for example deployments.
-
 ## Deployment
 
-### Prerequisites: Set HCP environment variables
+A. <a href="#SetHCPEnv">Set HCP environment variables</a><br />
+B. <a href="#SetAWSEnv">Set AWS environment variables</a><br />
+C. <a href="#SelectExample">Select Example Deploy</a><br />
+D. <a href="#Edit_tfvars">Edit sample.auto.tfvars</a><br />
+E. <a href="#DeployTF">Run the Terraform to Deploy</a><br />
+F. <a href="#AccessVault">Access HCP Vault GUI</a><br />
+G. <a href="#AccessDemoApp">Use Vault in Demo App</a><br />
+
+<hr />
+
+<a name="SetHCPEnv"></a>
+
+### Set HCP environment variables
 
 These statements define how to reach HCP:
 ```bash
@@ -51,6 +59,8 @@ Below are steps to obtain the values above:
     export HCP_CLIENT_SECRET=abcdef123mPwF7VIOuHDdthq42V0fUQBLbq-ZxadCMT5WaJW925bbXN9UJ9zBut9
     ```
 
+    <a name="SetAWSEnv"></a>
+
     ### Set AWS environment variables:
 
 14. Export your AWS Account credentials (such as from Doormat), as defined by the AWS Terraform provider:
@@ -60,15 +70,29 @@ Below are steps to obtain the values above:
     ```
 15. Set the environment variables by pressing Enter on the Terminal or running <tt>source ~/.zshrc</tt> or <tt>~/.bash_profile</tt>
 
-    ### sample.auto.tfvars
+    <a name="SelectExample"></a>
+    
+    ### Select Example Deploy
+ 
+16.  Use your favorite editor to navigate into the <tt>examples</tt> folder.
+17.  cd into one of the <a target="_blank" href=https://github.com/stoffee/terraform-hcp-vault-eks/tree/primary/examples>[examples]</a> example deployments.
 
-16. Rename <tt>sample.auto.tfvars_example</tt> to <tt>sample.auto.tfvars</tt>
+    <a name="Edit_tfvars"></a>
+
+    ### Edit sample.auto.tfvars
+
+18. Rename <tt>sample.auto.tfvars_example</tt> to <tt>sample.auto.tfvars</tt>
 
     ```bash
     cp sample.auto.tfvars_example sample.auto.tfvars
     ```  
-17. Edit the file to customize your install.
-18. Initialize and apply the Terraform configuration to get a customized environment. Ensure you view the plan details and approve with a yes.
+19. Edit the file to customize your install.
+    
+    <a name="DeployTF"></a>
+
+    ### Run the Terraform to Deploy
+
+20. Initialize and apply the Terraform configuration to get a customized environment. Ensure you view the plan details and approve with a yes.
 
     ```bash
     terraform init
@@ -108,9 +132,9 @@ Below are steps to obtain the values above:
     </pre>
 
 
-    <a name="AccessDeploy"></a>
+    <a name="AccessVault"></a>
 
-    ### Access HCP Vault:
+    ### Access HCP Vault GUI:
 
 1.  On a Mac, open a browser window to your HCP Vault cluster:
 
@@ -155,10 +179,9 @@ Below are steps to obtain the values above:
 
 4.  setting the `KUBECONFIG` environment variable ???
 
-
     <a name="AccessDemoApp"></a>
 
-    ### Access Demo Application:
+    ### Use Vault in Demo App:
 
     **Warning**: This application is publicly accessible, make sure to delete the Kubernetes resources associated with the application when done.
 
@@ -176,7 +199,7 @@ Below are steps to obtain the values above:
 
 Alternatively, find this info in the HCP portal:
 
-1.  On a browser login into <a target="_blank" href=https://portal.cloud.hashicorp.com>HCP Portal</a>
+1.  On a browser login into HCP Portal:
 
     <a target="_blank" href="https://portal.cloud.hashicorp.com">https://portal.cloud.hashicorp.com</a>
 
