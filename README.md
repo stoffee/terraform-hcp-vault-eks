@@ -1,9 +1,7 @@
 # HCP Vault EKS Module
 
-This repo contains a Terraform module that creates a full deployment of a HCP Vault cluster
-with an AWS EKS cluster and VPC peering. This module can also be customized to only deploy what you need.
+This repo automates otherwise <a target="_blank" href="https://developer.hashicorp.com/vault/tutorials/cloud/get-started-vault">manual steps on CLI & GUI</a> taken by an Administrator to create a Vault EKS cluster managed by the HCP (HashiCorp Cloud Platform). This module can also be customized to only deploy what you need.
 
-This automates <a target="_blank" href="https://developer.hashicorp.com/vault/tutorials/cloud/get-started-vault">manual steps</a>.
 
 ## Deployment
 
@@ -16,7 +14,7 @@ F. <a href="#DeployTF">Run Terraform to Deploy</a><br />
 
 G. <a href="#ConfirmAWSGUI">Confirm resources in AWS GUI</a><br />
 H. <a href="#ConfirmHCP">Confirm HCP</a><br />
-I. <a href="#AccessVault">Obtain HCP Vault GUI URL</a><br />
+I. &nbsp; <a href="#AccessVault">Obtain HCP Vault GUI URL</a><br />
 J. <a href="#AccessDemoApp">Access Vault API</a><br />
 K. <a href="#AccessEKS">Access the EKS Cluster</a><br />
 
