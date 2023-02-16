@@ -105,8 +105,8 @@ M. <a href="#DeleteVault">Delete Vault instance</a><br />
     cd examples
     cd full-deploy
     ```
-    NOTE: <tt><strong>full-deploy</strong></tt> example assumes use of a "Development" tier of Vault instance size, which incur charges as described at
-    <a target="_blank" href="https://cloud.hashicorp.com/products/vault/pricing">https://cloud.hashicorp.com/products/vault/pricing</a>
+    NOTE: <tt><strong>full-deploy</strong></tt> example assumes the use of a "Development" tier of Vault instance size, which incur charges as described at
+    <a target="_blank" href="https://cloud.hashicorp.com/products/vault/pricing">https://cloud.hashicorp.com/products/vault/pricing</a>.
     
     Alternately, the <tt><strong>eks-hvn-only-deploy</strong></tt> example only creates the HVN (HashiCorp Network), which in AWS is the VPC (Virtual Private Cloud).
 
@@ -136,9 +136,9 @@ M. <a href="#DeleteVault">Delete Vault instance</a><br />
 
 23. Use a text editor program to customize the <tt>sample.auto.tfvars</tt> file. For example:
 
-    <pre>cluster_id = "brown-blazer"
+    <pre>cluster_id = "dev-blazer"
     deploy_hvn = true
-    hvn_id               = "dev-eks-hvn"
+    hvn_id               = "eks-hvn"
     hvn_region           = "us-west-2"
     vpc_region           = "us-west-2"
     deploy_vault_cluster = true
@@ -150,7 +150,7 @@ M. <a href="#DeleteVault">Delete Vault instance</a><br />
     
     CAUTION: Having a different hvn_region from <tt>vpc_region</tt> will result in expensive AWS cross-region data access fees and slower performance.
 
-    NOTE: During deployment, Terraform HCL prepends the value of <tt>cluster_id</tt> (such as "brown-blazer") to construct resource names (such as "brown-blazer-eks" for <tt>eks_cluster_name</tt>, and <tt>eks_cluster_arn</tt> (such "brown-blazer-vps").
+    NOTE: During deployment, Terraform HCL prepends the value of <tt>cluster_id</tt> (such as "dev-blazer") to construct resource names (such as "dev-blazer-eks" for <tt>eks_cluster_name</tt>, and <tt>eks_cluster_arn</tt> (such "dev-blazer-vps").
 
 
     <a name="SetAWSEnv"></a>
@@ -171,12 +171,12 @@ M. <a href="#DeleteVault">Delete Vault instance</a><br />
     ```bash
     tfsec | sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g"
     ```
-    NOTE: The sed command filters out special characters to display colors.
+    NOTE: The sed command filters out special characters used to display colors.
 
-    WARNING: Do not continue until the concerns found are analyzed and remediated.
+    WARNING: Do not continue until concerns raised by TFSec found are analyzed and remediated.
 
 
-23. In the same Terminal window as the above step (or within a CI/CD workflow), run the Terraform HCL to create the environment within AWS based on specifications in <tt>sample.auto.tfvars</tt>:
+26. In the same Terminal window as the above step (or within a CI/CD workflow), run the Terraform HCL to create the environment within AWS based on specifications in <tt>sample.auto.tfvars</tt>:
     ```bash
     terraform init
     terraform plan
@@ -188,10 +188,10 @@ M. <a href="#DeleteVault">Delete Vault instance</a><br />
     If successful, you should see metadata about your instance:
     <pre>cluster_security_group_arn = "arn:aws:ec2:us-west-2:123456789123:security-group/sg-081e335dd11b10860"
     cluster_security_group_id = "sg-081e335dd11b10860"
-    eks_cluster_arn = "arn:aws:eks:us-west-2:123456789123:cluster/brown-blazer-eks"
+    eks_cluster_arn = "arn:aws:eks:us-west-2:123456789123:cluster/dev-blazer-eks"
     eks_cluster_certificate_authority_data = "...=="
     eks_cluster_endpoint = "https://1A2B3C4D5E6F4B5F9C8FC755105FAA00.gr7.us-west-2.eks.amazonaws.com"
-    eks_cluster_name = "brown-blazer-eks"
+    eks_cluster_name = "dev-blazer-eks"
     eks_cluster_oidc_issuer_url = "https://oidc.eks.us-west-2.amazonaws.com/id/1A2B3C4D5E6F4B5F9C8FC755105FAA00"
     eks_cluster_platform_version = "eks.15"
     eks_cluster_status = "ACTIVE"
@@ -220,7 +220,7 @@ M. <a href="#DeleteVault">Delete Vault instance</a><br />
 
     <pre>terraform apply -auto-approve  7.71s user 3.53s system 0% cpu 22:11.66 total</pre>
 
-25. One helpful design feature of Terraform HCL is that it's "declarative". So <tt>terraform apply</tt> can be run again. A sample response if no changes need to be made:
+27. One helpful design feature of Terraform HCL is that it's "declarative". So <tt>terraform apply</tt> can be run again. A sample response if no changes need to be made:
 
     ```bash
     No changes. Your infrastructure matches the configuration.
@@ -270,6 +270,8 @@ M. <a href="#DeleteVault">Delete Vault instance</a><br />
     That is equivalent to clicking <strong>Generate token</strong> under "New admin token" on your HCP Vault Overview page.
 
     CAUTION: Do not share this token with others. Create a separate account for each user.
+
+    CAUTION: Use the Admin account only to do admin work, and create an account for the Admin to do user-persona work. This minimizes an attack vector for hackers.
 
 30. Click <strong>Token</strong> selection under the "Method" heading within the "Sign in" form.
 
