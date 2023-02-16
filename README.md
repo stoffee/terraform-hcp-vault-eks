@@ -1,6 +1,6 @@
 # HCP Vault EKS Module
 
-This repo automates otherwise <a target="_blank" href="https://developer.hashicorp.com/vault/tutorials/cloud/get-started-vault">manual steps on CLI & GUI</a> taken by an Administrator to create a Vault EKS cluster managed by the HCP (HashiCorp Cloud Platform). This module can also be customized to only deploy what you need.
+<a target="_blank" href="https://github.com/stoffee/terraform-hcp-vault-eks">This repo</a> automates away the <a target="_blank" href="https://developer.hashicorp.com/vault/tutorials/cloud/get-started-vault">manual steps</a> to create a Vault EKS cluster managed by the HCP (HashiCorp Cloud Platform). This module can also be customized to only deploy what you need.
 
 
 ## Deployment
@@ -8,7 +8,7 @@ This repo automates otherwise <a target="_blank" href="https://developer.hashico
 A. <a href="#Install">Install utility programs</a><br />
 B. <a href="#SetHCPEnv">Set HCP environment variables</a><br />
 C. <a href="#SelectExample">Select Example Deploy</a><br />
-D. <a href="#Edit_tfvars">Edit sample.auto.tfvars</a><br />
+D. <a href="#Edit_tfvars">Edit options in sample.auto.tfvars</a><br />
 E. <a href="#SetAWSEnv">Set AWS environment variables</a><br />
 F. <a href="#DeployTF">Run Terraform to Deploy</a><br />
 
@@ -110,7 +110,8 @@ M. <a href="#DestroyVault">Destroy Vault instance</a><br />
     
     Alternately, the <tt><strong>eks-hvn-only-deploy</strong></tt> example only creates the HVN (HashiCorp Network), which in AWS is the VPC (Virtual Private Cloud).
 
-    TODO: A <tt><strong>prod-ha</strong></tt> (production-high availability) example is being constructed to use (at a higher cost) features not in dev deploys:
+    TODO: Example <tt><strong>prod-eks</strong></tt> (production-high availability) constructs (at a higher cost) features not in dev deploys:
+    * Larger "Standard" type of servers
     * Vault clusters in each of the three Availability Zones within a single region
     * RBAC with least-privilege permissions (no wildcard resource specifications)
     * Encrypted communications, logging, and data at rest
@@ -120,12 +121,14 @@ M. <a href="#DestroyVault">Destroy Vault instance</a><br />
     * Node pools have automatic repair and auto-upgrade
     <br /><br />
 
-    TODO: A <tt><strong>prod-dr</strong></tt> (production-disaster recovery) example is being constructed to use (at a higher cost) <strong>multiple regions</strong> and <a target="_blank" href="https://developer.hashicorp.com/vault/docs/enterprise/replication">replication</a> needed for reliability.
+    TODO: Example <tt><strong>dr-eks</strong></tt> (disaster recovery in production) example repeats example <tt>prod-eks</tt> to construct (at a higher cost) <strong>two regions</strong> for fail-over recovery.
+    
+    TODO: <a target="_blank" href="https://developer.hashicorp.com/vault/docs/enterprise/replication">Replication</a> for high transaction load.
 
 
     <a name="Edit_tfvars"></a>
 
-    ### Edit sample.auto.tfvars
+    ### Edit options in sample.auto.tfvars
 
 22. Rename <tt>sample.auto.tfvars_example</tt> to <tt>sample.auto.tfvars</tt>
 
@@ -298,7 +301,7 @@ M. <a href="#DestroyVault">Destroy Vault instance</a><br />
 
     Switch back to the HCP screen to confirm what has been built:
 
-36. At the <a href="https://portal.cloud.hashicorp.com/">HCP dashboard</a>,
+36. In an internet browser, go to the HCP portal at <a href="https://portal.cloud.hashicorp.com/">[HCP dashboard](https://portal.cloud.hashicorp.com)</a>
 37. Click the blue "View Vault".
 38. Click the Vault ID text -- the text above "Running" for the <strong>Overview</strong> page for your Vault instance managed by HCP.
 39. PROTIP: For quicker access in the future, save the URL in your browser bookmarks. Let's examine the <strong>Cluster Details</strong> such as this:
