@@ -18,8 +18,8 @@ I. &nbsp; <a href="#AccessVault">Obtain HCP Vault GUI URL</a><br />
 J. <a href="#AccessDemoApp">Access Vault API</a><br />
 K. <a href="#AccessEKS">Access the EKS Cluster</a><br />
 
-L. <a href="#Upgrade">Upgrade for reliability</a><br />
-M. <a href="#DeleteVault">Delete Vault instance</a><br />
+L. <a href="#Upgrade">Manage Kubernetes</a><br />
+M. <a href="#DestroyVault">Destroy Vault instance</a><br />
 
 <hr />
 
@@ -138,7 +138,7 @@ M. <a href="#DeleteVault">Delete Vault instance</a><br />
 
     <pre>cluster_id = "dev-blazer"
     deploy_hvn = true
-    hvn_id               = "eks-hvn"
+    hvn_id               = "dev-eks"
     hvn_region           = "us-west-2"
     vpc_region           = "us-west-2"
     deploy_vault_cluster = true
@@ -271,17 +271,25 @@ M. <a href="#DeleteVault">Delete Vault instance</a><br />
 
     CAUTION: Do not share this token with others. Create a separate account for each user.
 
-    CAUTION: Use the Admin account only to do admin work, and create an account for the Admin to do user-persona work. This minimizes an attack vector for hackers.
-
 30. Click <strong>Token</strong> selection under the "Method" heading within the "Sign in" form.
 
     NOTE: A generated token is one of <a target="_blank" href="https://developer.hashicorp.com/vault/docs/auth">many Authentication Methods</a> supported by Vault.
 
 31. Click in the <strong>Token</strong> field within the "Sign in" form, then paste the token.
 
-32. Click the blue "Sign in".
+32. Click the blue "Sign in" (as Administrator).
 
-    NOTE: As the Administrator, you have, by default, access to Vault's <a target="_blank" href="https://developer.hashicorp.com/vault/docs/secrets/cubbyhole">>cubbyhole/</a>, one of the industry' widest support of <a target="_blank" href="https://developer.hashicorp.com/vault/docs/secrets">Secrets Engines</a>.
+    NOTE: As the Administrator, you have, by default, access to Vault's <a target="_blank" href="https://developer.hashicorp.com/vault/docs/secrets/cubbyhole">>cubbyhole/</a>. of the industry's widest support of <a target="_blank" href="https://developer.hashicorp.com/vault/docs/secrets">Secrets Engines</a>.
+
+33. CAUTION: Use the Admin account only to do admin work:
+
+    <a target="_blank" href="https://res.cloudinary.com/dcajqrroq/image/upload/v1675399191/vault-hcp-main-menu-485x53_lhdolz.jpg"><img width="485" height="53" src="https://res.cloudinary.com/dcajqrroq/image/upload/v1675399191/vault-hcp-main-menu-485x53_lhdolz.jpg"></a>
+
+34. Click "Access" on the horizontal menu:
+
+    <a target="_blank" href="https://res.cloudinary.com/dcajqrroq/image/upload/v1675424226/vault-hcp-access-menu-212x267_qkyci7.jpg"><img width="212" height="267" src="https://res.cloudinary.com/dcajqrroq/image/upload/v1675424226/vault-hcp-access-menu-212x267_qkyci7.jpg"></a>
+
+35. Create an account for the Admin to use when developer persona work. This minimizes an attack vector for hackers.
 
 
     <a name="ConfirmHCP"></a>
@@ -290,23 +298,23 @@ M. <a href="#DeleteVault">Delete Vault instance</a><br />
 
     Switch back to the HCP screen to confirm what has been built:
 
-33. At the <a href="https://portal.cloud.hashicorp.com/">HCP dashboard</a>,
-34. Click the blue "View Vault".
-35. Click the Vault ID text -- the text above "Running" for the <strong>Overview</strong> page for your Vault instance managed by HCP.
-36. PROTIP: For quicker access in the future, save the URL in your browser bookmarks. Let's examine the <strong>Cluster Details</strong> such as this:
+36. At the <a href="https://portal.cloud.hashicorp.com/">HCP dashboard</a>,
+37. Click the blue "View Vault".
+38. Click the Vault ID text -- the text above "Running" for the <strong>Overview</strong> page for your Vault instance managed by HCP.
+39. PROTIP: For quicker access in the future, save the URL in your browser bookmarks. Let's examine the <strong>Cluster Details</strong> such as this:
 
     <a target="_blank" href="https://res.cloudinary.com/dcajqrroq/image/upload/v1676446677/hcp-vault-dev-320x475_gh8olg.jpg"><img src="https://res.cloudinary.com/dcajqrroq/image/upload/v1676446677/hcp-vault-dev-320x475_gh8olg.jpg"></a>
     
-    Notice that the instance created is an instance that's "Extra Small", with No HA (High Availability).
+    Notice that the instance created is an instance that's "Extra Small", with No HA (High Availability) of clusters duplicated across several Availability Zones.
 
-    CAUTION: You should not depend on a <strong>Development</strong> instance for productive use. 
+    CAUTION: You should not rely on a <strong>Development</strong> instance for productive use. 
 
 
     <a name="AccessDemoApp"></a>
 
     ### Access Vault API
 
-    **Warning**: This application is publicly accessible, make sure to delete the Kubernetes resources associated with the application when done.
+    **Warning**: This application is publicly accessible, make sure to destroy the Kubernetes resources associated with the application when done.
 
 38. Dynamically obtain credentials to the Vault cluster managed by HCP by running these commands on your Terminal:
 
@@ -472,9 +480,9 @@ M. <a href="#DeleteVault">Delete Vault instance</a><br />
 
 <hr />
 
-<a name="DeleteVault"></a>
+<a name="DestroyVault"></a>
 
-## Delete Vault Instance
+## Destroy Vault Instance
 
 PROTIP: Because this repo enables a new Vault cluster to be easily created in HCP, there is less hesitancy about destroying them (to save money and avoid confusion).
 
@@ -507,7 +515,7 @@ PROTIP: Because this repo enables a new Vault cluster to be easily created in HC
     </pre>
     Time to complete the command has been typically 20-40 minutes.
 
-10. Delete the files <tt>terraform.tfstate</tt> and <tt>terraform.tfstate.backup</tt>
+10. Remove the files <tt>terraform.tfstate</tt> and <tt>terraform.tfstate.backup</tt>
     ```bash
     rm terraform.*
     ```
