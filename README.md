@@ -7,59 +7,73 @@ This automates <a target="_blank" href="https://developer.hashicorp.com/vault/tu
 
 ## Deployment
 
-A. <a href="#SetHCPEnv">Set HCP environment variables</a><br />
-B. <a href="#SelectExample">Select Example Deploy</a><br />
-C. <a href="#Edit_tfvars">Edit sample.auto.tfvars</a><br />
-D. <a href="#SetAWSEnv">Set AWS environment variables</a><br />
-E. <a href="#DeployTF">Run Terraform to Deploy</a><br />
-F. <a href="#ConfirmAWSGUI">Confirm AWS GUI</a><br />
-G. <a href="#ConfirmHCP">Confirm HCP</a><br />
-H. <a href="#AccessVault">Obtain HCP Vault GUI URL</a><br />
-I. <a href="#AccessDemoApp">Access Vault API</a><br />
+A. <a href="#Install">Install utility programs</a><br />
+B. <a href="#SetHCPEnv">Set HCP environment variables</a><br />
+C. <a href="#SelectExample">Select Example Deploy</a><br />
+D. <a href="#Edit_tfvars">Edit sample.auto.tfvars</a><br />
+E. <a href="#SetAWSEnv">Set AWS environment variables</a><br />
+F. <a href="#DeployTF">Run Terraform to Deploy</a><br />
+G. <a href="#ConfirmAWSGUI">Confirm AWS GUI</a><br />
+H. <a href="#ConfirmHCP">Confirm HCP</a><br />
+I. <a href="#AccessVault">Obtain HCP Vault GUI URL</a><br />
+J. <a href="#AccessDemoApp">Access Vault API</a><br />
 
-J. <a href="#Upgrade">Upgrade for reliability</a><br />
-K. <a href="#DeleteVault">Delete Vault instance</a><br />
+K. <a href="#Upgrade">Upgrade for reliability</a><br />
+L. <a href="#DeleteVault">Delete Vault instance</a><br />
 
 <hr />
 
-<a name="SetHCPEnv"></a>
+<a name="Install"></a>
 
-### Set HCP environment variables
+### Install utility programs
 
-Below are steps to obtain credentials used to set up HCP within AWS:
-```bash
-export HCP_CLIENT_ID=1234oTzq81L6DxXmQrrfkTl9lv9tYKHJ
-export HCP_CLIENT_SECRET=abcdef123mPwF7VIOuHDdthq42V0fUQBLbq-ZxadCMT5WaJW925bbXN9UJ9zBut9
-export AWS_ACCESS_KEY_ID=ZXYRQPONMLKJIHGFEDCBA
-export AWS_SECRET_ACCESS_KEY=abcdef12341uLY5oZCi5ILlWqyY++QpWEYnxz62w
-```
-Most enterprises allocate AWS dynamically for a brief time (such as HashiCorp employees using "Bootcamp"). So the above are defined on a Terminal session for one-time use instead of being stored (statically) in a <tt>~/.zshrc</tt> or <tt>~/.bash_profile</tt> file run automatically when a Terminal window is created.
+1.  If you are using a MacOS machine, install Apple's utilities, then Homebrew formulas:
+
+    <pre><strong>xcode select --install
+    brew install  git  jq  awscli  tfsec  vault
+    </strong></pre>
+
+    NOTE: HashiCorp Enterprise users instead use the Vault enterprise (vault-ent) program.
+
+    
+    <a name="SetHCPEnv"></a>
+
+    ### Set HCP environment variables
+
+    Below are steps to obtain credentials used to set up HCP within AWS:
+    ```bash
+    export HCP_CLIENT_ID=1234oTzq81L6DxXmQrrfkTl9lv9tYKHJ
+    export HCP_CLIENT_SECRET=abcdef123mPwF7VIOuHDdthq42V0fUQBLbq-ZxadCMT5WaJW925bbXN9UJ9zBut9
+    export AWS_ACCESS_KEY_ID=ZXYRQPONMLKJIHGFEDCBA
+    export AWS_SECRET_ACCESS_KEY=abcdef12341uLY5oZCi5ILlWqyY++QpWEYnxz62w
+    ```
+    Most enterprises allocate AWS dynamically for a brief time (such as HashiCorp employees using "Bootcamp"). So the above are defined on a Terminal session for one-time use instead of being stored (long term, statically) in a <tt>~/.zshrc</tt> or <tt>~/.bash_profile</tt> file run automatically when a Terminal window is created.
 
 
-<a name="SignInHCP"></a>
-1.  Reach the HCP portal at this URL:
+    <a name="SignInHCP"></a>
+2.  Reach the HCP portal at this URL:
     <a target="_blank" href="https://portal.cloud.hashicorp.com/">https://portal.cloud.hashicorp.com</a>
-2.  Click "Sign in" or first "Create an account" (for an "org" to work with) to reach the Dashboard for your organization listed at the bottom-left.
-3.  PROTIP: To quickly reach the URL specific to your org, save it to your bookmarks in your browser.
-4.  PROTIP: HCP has a 7-minute interaction timeout. So many users auto-populate the browser form using 1Password, which stores and retrieves credentials locally.
+3.  Click "Sign in" or first "Create an account" (for an "org" to work with) to reach the Dashboard for your organization listed at the bottom-left.
+4.  PROTIP: To quickly reach the URL specific to your org, save it to your bookmarks in your browser.
+5.  PROTIP: HCP has a 7-minute interaction timeout. So many users auto-populate the browser form using 1Password, which stores and retrieves credentials locally.
    
-5.  Click "Access control (IAM)" on the left menu item under your org.
-6.  Click "Service principals" (which act like users on behalf of a service).
-7.  Click the blue "Create Service principal".
-8.  Specify a Name (for example, JohnDoe-23-12-31) for a Contributor.
+6.  Click "Access control (IAM)" on the left menu item under your org.
+7.  Click "Service principals" (which act like users on behalf of a service).
+8.  Click the blue "Create Service principal".
+9.  Specify a Name (for example, JohnDoe-23-12-31) for a Contributor.
 
     PROTIP: Add a date (such as 23-12-31) to make it easier to identify when it's time to refresh credentials.
 
-9.  Click "Save" for the creation toast at the lower left. 
-10. Click "Generate key" at the right or "Create service principal key" in the middle of the screen.
-11. Click the icon for the <strong>Client ID</strong> to copy it into your Clipboard.
-12. Switch to your Terminal to type, then paste from Clipboard a command such as:
+10. Click "Save" for the creation toast at the lower left. 
+11. Click "Generate key" at the right or "Create service principal key" in the middle of the screen.
+12. Click the icon for the <strong>Client ID</strong> to copy it into your Clipboard.
+13. Switch to your Terminal to type, then paste from Clipboard a command such as:
     ```bash
     export HCP_CLIENT_ID=1234oTzq81L6DxXmQrrfkTl9lv9tYKHJ
     ```
-13. Switch back to HCP.
-14. Click the icon for the <strong>Client secret</strong> to copy it into your Clipboard.
-15. Switch to your Terminal to type, then paste from Clipboard a command such as:
+14. Switch back to HCP.
+15. Click the icon for the <strong>Client secret</strong> to copy it into your Clipboard.
+16. Switch to your Terminal to type, then paste from Clipboard a command such as:
     ```bash
     export HCP_CLIENT_SECRET=abcdef123mPwF7VIOuHDdthq42V0fUQBLbq-ZxadCMT5WaJW925bbXN9UJ9zBut9
     ```
@@ -68,22 +82,22 @@ Most enterprises allocate AWS dynamically for a brief time (such as HashiCorp em
     
     ### Select Example Deploy
  
-16. Obtain a copy of the repository onto your laptop:
+17. Obtain a copy of the repository onto your laptop:
     ```bash
     git clone git@github.com:stoffee/terraform-hcp-vault-eks.git
     cd terraform-hcp-vault-eks
     ```
-17. Since the <tt>main</tt> branch of this repo is under active change and thus may be unstable, copy to your Clipboard the last stable release of this repo to use at:
+18. Since the <tt>main</tt> branch of this repo is under active change and thus may be unstable, copy to your Clipboard the last stable release of this repo to use at:
 
     <a target="_blank" href="https://github.com/stoffee/terraform-hcp-vault-eks/releases">
     https://github.com/stoffee/terraform-hcp-vault-eks/releases</a>
 
-18. Set the repo to the release tag identified in the step above (such as "v0.0.6"):
+19. Set the repo to the release tag identified in the step above (such as "v0.0.6"):
 
     ```bash
     git checkout "v0.0.g"
     ```
-19. Navigate into one of the <a target="_blank" href=https://github.com/stoffee/terraform-hcp-vault-eks/tree/primary/examples>[example]</a> deployment folders:
+20. Navigate into one of the <a target="_blank" href=https://github.com/stoffee/terraform-hcp-vault-eks/tree/primary/examples>[example]</a> deployment folders:
 
     ```bash
     cd examples
@@ -97,14 +111,14 @@ Most enterprises allocate AWS dynamically for a brief time (such as HashiCorp em
 
     ### Edit sample.auto.tfvars
 
-20. Rename <tt>sample.auto.tfvars_example</tt> to <tt>sample.auto.tfvars</tt>
+21. Rename <tt>sample.auto.tfvars_example</tt> to <tt>sample.auto.tfvars</tt>
 
     ```bash
     cp sample.auto.tfvars_example sample.auto.tfvars
     ```
     NOTE: The file <tt>sample.auto.tfvars</tt> is specified in the repo's <tt>.gitignore</tt> file so it doesn't get uploaded into GitHub.
 
-21. Use a text editor program to customize the <tt>sample.auto.tfvars</tt> file. For example:
+22. Use a text editor program to customize the <tt>sample.auto.tfvars</tt> file. For example:
 
     <pre>cluster_id = "blue-blazer"
     deploy_hvn = true
@@ -136,6 +150,15 @@ Most enterprises allocate AWS dynamically for a brief time (such as HashiCorp em
     <a name="DeployTF"></a>
 
     ### Run Terraform to Deploy
+
+23. In the same Terminal window as the above step (or within a CI/CD workflow), run a static scan for security vulnerabilities in Terraform HCL:
+    ```bash
+    tfsec | sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g"
+    ```
+    NOTE: The sed command filters out special characters to display colors.
+
+    WARNING: Do not continue until the concerns found are analyzed and remediated.
+
 
 23. In the same Terminal window as the above step (or within a CI/CD workflow), run the Terraform HCL to create the environment within AWS based on specifications in <tt>sample.auto.tfvars</tt>:
     ```bash
@@ -181,7 +204,7 @@ Most enterprises allocate AWS dynamically for a brief time (such as HashiCorp em
 
     <pre>terraform apply -auto-approve  7.71s user 3.53s system 0% cpu 22:11.66 total</pre>
 
-24. One helpful design feature of Terraform HCL is that it's "declarative". So <tt>terraform apply</tt> can be run again. A sample response if no changes need to be made:
+25. One helpful design feature of Terraform HCL is that it's "declarative". So <tt>terraform apply</tt> can be run again. A sample response if no changes need to be made:
 
     ```bash
     No changes. Your infrastructure matches the configuration.
@@ -260,15 +283,6 @@ Most enterprises allocate AWS dynamically for a brief time (such as HashiCorp em
     CAUTION: You should not depend on a <strong>Development</strong> instance for productive use. 
 
 
-
-36. Click <strong>Replication</strong> on the left menu. Click "Read more about Vault replication".
-
-
-    Upgrading to a "Standard" instance provides backup and auditing.
-
-    Upgrade to obtain <a target="_blank" href="https://developer.hashicorp.com/vault/docs/enterprise/replication">replication</a> needed for reliability.
-
-
     <a name="AccessEKS"></a>
     
     ### Access the EKS Cluster:
@@ -295,6 +309,7 @@ Most enterprises allocate AWS dynamically for a brief time (such as HashiCorp em
     </pre>
 
 37. setting the `KUBECONFIG` environment variable ???
+
 
     <a name="AccessDemoApp"></a>
 
@@ -466,7 +481,12 @@ Alternatively, find this info in the HCP portal:
 
 TODO:
 
-https://developer.hashicorp.com/vault/docs/enterprise/replication
+1. Click <strong>Replication</strong> on the left menu. Click "Read more about Vault replication".
+
+    Upgrading to a "Standard" instance provides <a target="_blank" href="https://n2ws.com/blog/how-to-guides/automate-amazon-ec2-instance-backup">backup</a> and auditing.
+
+    Upgrade to obtain <a target="_blank" href="https://developer.hashicorp.com/vault/docs/enterprise/replication">replication</a> needed for reliability.
+
 
 <hr />
 
