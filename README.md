@@ -13,24 +13,26 @@ C. <a href="#SelectExample">Select Example Deploy</a><br />
 D. <a href="#Edit_tfvars">Edit sample.auto.tfvars</a><br />
 E. <a href="#SetAWSEnv">Set AWS environment variables</a><br />
 F. <a href="#DeployTF">Run Terraform to Deploy</a><br />
-G. <a href="#ConfirmAWSGUI">Confirm AWS GUI</a><br />
+
+G. <a href="#ConfirmAWSGUI">Confirm resources in AWS GUI</a><br />
 H. <a href="#ConfirmHCP">Confirm HCP</a><br />
 I. <a href="#AccessVault">Obtain HCP Vault GUI URL</a><br />
 J. <a href="#AccessDemoApp">Access Vault API</a><br />
+K. <a href="#AccessEKS">Access the EKS Cluster</a><br />
 
-K. <a href="#Upgrade">Upgrade for reliability</a><br />
-L. <a href="#DeleteVault">Delete Vault instance</a><br />
+L. <a href="#Upgrade">Upgrade for reliability</a><br />
+M. <a href="#DeleteVault">Delete Vault instance</a><br />
 
 <hr />
 
 <a name="Install"></a>
 
-### Install utility programs
+###     Install utility programs
 
 1.  If you are using a MacOS machine, install Apple's utilities, then Homebrew formulas:
 
     <pre><strong>xcode select --install
-    brew install  git  jq  awscli  tfsec  vault
+    brew install  git  jq  awscli  tfsec  vault  kubectl
     </strong></pre>
 
     NOTE: HashiCorp Enterprise users instead use the Vault enterprise (vault-ent) program.
@@ -51,29 +53,33 @@ L. <a href="#DeleteVault">Delete Vault instance</a><br />
 
 
     <a name="SignInHCP"></a>
-2.  Reach the HCP portal at this URL:
+2.  Be at the browser window which you want a new tab added to contain the URL in the next step:
+3.  Click this URL to open the HCP portal:
+    
     <a target="_blank" href="https://portal.cloud.hashicorp.com/">https://portal.cloud.hashicorp.com</a>
-3.  Click "Sign in" or first "Create an account" (for an "org" to work with) to reach the Dashboard for your organization listed at the bottom-left.
-4.  PROTIP: To quickly reach the URL specific to your org, save it to your bookmarks in your browser.
-5.  PROTIP: HCP has a 7-minute interaction timeout. So many users auto-populate the browser form using 1Password, which stores and retrieves credentials locally.
+
+4.  Click "Sign in" or, if you haven't already, "Create an account" (for an "org" to work with) to reach the Dashboard for your organization listed at the bottom-left.
+
+5.  PROTIP: To quickly reach the URL specific to your org, save it to your bookmarks in your browser.
+6.  PROTIP: HCP has a 7-minute interaction timeout. So many users auto-populate the browser form using 1Password, which stores and retrieves credentials locally.
    
-6.  Click "Access control (IAM)" on the left menu item under your org.
-7.  Click "Service principals" (which act like users on behalf of a service).
-8.  Click the blue "Create Service principal".
-9.  Specify a Name (for example, JohnDoe-23-12-31) for a Contributor.
+7.  Click "Access control (IAM)" on the left menu item under your org.
+8.  Click "Service principals" (which act like users on behalf of a service).
+9.  Click the blue "Create Service principal".
+10. Specify a Name (for example, JohnDoe-23-12-31) for a Contributor.
 
     PROTIP: Add a date (such as 23-12-31) to make it easier to identify when it's time to refresh credentials.
 
-10. Click "Save" for the creation toast at the lower left. 
-11. Click "Generate key" at the right or "Create service principal key" in the middle of the screen.
-12. Click the icon for the <strong>Client ID</strong> to copy it into your Clipboard.
-13. Switch to your Terminal to type, then paste from Clipboard a command such as:
+11. Click "Save" for the creation toast at the lower left. 
+12. Click "Generate key" at the right or "Create service principal key" in the middle of the screen.
+13. Click the icon for the <strong>Client ID</strong> to copy it into your Clipboard.
+14. Switch to your Terminal to type, then paste from Clipboard a command such as:
     ```bash
     export HCP_CLIENT_ID=1234oTzq81L6DxXmQrrfkTl9lv9tYKHJ
     ```
-14. Switch back to HCP.
-15. Click the icon for the <strong>Client secret</strong> to copy it into your Clipboard.
-16. Switch to your Terminal to type, then paste from Clipboard a command such as:
+15. Switch back to HCP.
+16. Click the icon for the <strong>Client secret</strong> to copy it into your Clipboard.
+17. Switch to your Terminal to type, then paste from Clipboard a command such as:
     ```bash
     export HCP_CLIENT_SECRET=abcdef123mPwF7VIOuHDdthq42V0fUQBLbq-ZxadCMT5WaJW925bbXN9UJ9zBut9
     ```
@@ -82,45 +88,57 @@ L. <a href="#DeleteVault">Delete Vault instance</a><br />
     
     ### Select Example Deploy
  
-17. Obtain a copy of the repository onto your laptop:
+18. Obtain a copy of the repository onto your laptop:
     ```bash
     git clone git@github.com:stoffee/terraform-hcp-vault-eks.git
     cd terraform-hcp-vault-eks
     ```
-18. Since the <tt>main</tt> branch of this repo is under active change and thus may be unstable, copy to your Clipboard the last stable release of this repo to use at:
+19. Since the <tt>main</tt> branch of this repo is under active change and thus may be unstable, copy to your Clipboard the last stable release of this repo to use at:
 
     <a target="_blank" href="https://github.com/stoffee/terraform-hcp-vault-eks/releases">
     https://github.com/stoffee/terraform-hcp-vault-eks/releases</a>
 
-19. Set the repo to the release tag identified in the step above (such as "v0.0.6"):
-
+20. Set the repo to the GitHub branch named by a release tag identified in the step above (such as "v0.0.6"):
     ```bash
-    git checkout "v0.0.g"
+    git checkout v0.0.6
     ```
-20. Navigate into one of the <a target="_blank" href=https://github.com/stoffee/terraform-hcp-vault-eks/tree/primary/examples>[example]</a> deployment folders:
-
+21. Navigate into one of the <a target="_blank" href=https://github.com/stoffee/terraform-hcp-vault-eks/tree/primary/examples>example</a> folder of deployments:
     ```bash
     cd examples
     cd full-deploy
     ```
-    Alternately, the <tt>eks-hvn-only-deploy</tt> only creates the HVN (HashiCorp Network), which in AWS is the VPC (Virtual Private Cloud).
+    NOTE: <tt><strong>full-deploy</strong></tt> example assumes use of a "Development" tier of Vault instance size, which incur charges as described at
+    <a target="_blank" href="https://cloud.hashicorp.com/products/vault/pricing">https://cloud.hashicorp.com/products/vault/pricing</a>
+    
+    Alternately, the <tt><strong>eks-hvn-only-deploy</strong></tt> example only creates the HVN (HashiCorp Network), which in AWS is the VPC (Virtual Private Cloud).
 
-    TODO: A <tt>prod</tt> sample will be available.
+    TODO: A <tt><strong>prod-ha</strong></tt> (production-high availability) example is being constructed to use (at a higher cost) features not in dev deploys:
+    * Vault clusters in each of the three Availability Zones within a single region
+    * RBAC with least-privilege permissions (no wildcard resource specifications)
+    * Encrypted communications, logging, and data at rest
+    * Emitting VPC, CloudWatch, and other logs to a central repository for auditing and analysis by a central SOC (Security Operations Center)
+    * <a target="_blank" href="https://n2ws.com/blog/how-to-guides/automate-amazon-ec2-instance-backup">Instance Backups</a>
+    * <a target="_blank" href="https://aws.amazon.com/premiumsupport/knowledge-center/deleteontermination-ebs/">AWS Volume Purge Protection</a>
+    * Node pools have automatic repair and auto-upgrade
+    <br /><br />
+
+    TODO: A <tt><strong>prod-dr</strong></tt> (production-disaster recovery) example is being constructed to use (at a higher cost) <strong>multiple regions</strong> and <a target="_blank" href="https://developer.hashicorp.com/vault/docs/enterprise/replication">replication</a> needed for reliability.
+
 
     <a name="Edit_tfvars"></a>
 
     ### Edit sample.auto.tfvars
 
-21. Rename <tt>sample.auto.tfvars_example</tt> to <tt>sample.auto.tfvars</tt>
+22. Rename <tt>sample.auto.tfvars_example</tt> to <tt>sample.auto.tfvars</tt>
 
     ```bash
     cp sample.auto.tfvars_example sample.auto.tfvars
     ```
     NOTE: The file <tt>sample.auto.tfvars</tt> is specified in the repo's <tt>.gitignore</tt> file so it doesn't get uploaded into GitHub.
 
-22. Use a text editor program to customize the <tt>sample.auto.tfvars</tt> file. For example:
+23. Use a text editor program to customize the <tt>sample.auto.tfvars</tt> file. For example:
 
-    <pre>cluster_id = "blue-blazer"
+    <pre>cluster_id = "brown-blazer"
     deploy_hvn = true
     hvn_id               = "dev-eks-hvn"
     hvn_region           = "us-west-2"
@@ -132,16 +150,16 @@ L. <a href="#DeleteVault">Delete Vault instance</a><br />
     deploy_eks_cluster   = true
     </pre>
     
-    CAUTION: Having different <tt>hvn_region</tt> and <tt>vpc_region</tt> will result in expensive AWS cross-region data access fees and slower performance.
+    CAUTION: Having a different hvn_region from <tt>vpc_region</tt> will result in expensive AWS cross-region data access fees and slower performance.
 
-    NOTE: During deployment, Terraform HCL prepends the <tt>cluster_id</tt> (such as "brown-blazer") as the prefix to construct resource names such as "brown-blazer-eks" for <tt>eks_cluster_name</tt> and <tt>eks_cluster_arn</tt>; "brown-blazer-vps", etc.
+    NOTE: During deployment, Terraform HCL prepends the value of <tt>cluster_id</tt> (such as "brown-blazer") to construct resource names (such as "brown-blazer-eks" for <tt>eks_cluster_name</tt>, and <tt>eks_cluster_arn</tt> (such "brown-blazer-vps").
 
 
     <a name="SetAWSEnv"></a>
 
     ### Set AWS environment variables:
 
-22. In the Terminal window you will use to run Terraform in the next step, set the AWS account credentials used to build your Vault instance, such as:
+24. In the Terminal window, you will use to run Terraform in the next step, set the AWS account credentials used to build your Vault instance, such as:
     ```bash
     export AWS_ACCESS_KEY_ID=ZXYRQPONMLKJIHGFEDCBA
     export AWS_SECRET_ACCESS_KEY=abcdef12341uLY5oZCi5ILlWqyY++QpWEYnxz62w
@@ -151,7 +169,7 @@ L. <a href="#DeleteVault">Delete Vault instance</a><br />
 
     ### Run Terraform to Deploy
 
-23. In the same Terminal window as the above step (or within a CI/CD workflow), run a static scan for security vulnerabilities in Terraform HCL:
+25. In the same Terminal window as the above step (or within a CI/CD workflow), run a static scan for security vulnerabilities in Terraform HCL:
     ```bash
     tfsec | sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g"
     ```
@@ -216,7 +234,7 @@ L. <a href="#DeleteVault">Delete Vault instance</a><br />
 
     <a name="ConfirmAWSGUI"></a>
 
-    ### Confirm AWS GUI
+    ### Confirm resources in AWS GUI
 
 25. Use the AWS Account, User Name, and Password associated with the <a href="#SetAWSEnv">AWS variables</a> mentioned above to view different services in the AWS Management Console GUI:
 
@@ -225,6 +243,7 @@ L. <a href="#DeleteVault">Delete Vault instance</a><br />
     * <a target="_blank" href="https://console.aws.amazon.com/eks/">Elastic Kubernetes Service</a>
     <br /><br />    
 
+    NOTE: Vault in Development mode operates an in-memory database and so does not require an external database.
 
     <a name="AccessVault"></a>
 
@@ -283,9 +302,39 @@ L. <a href="#DeleteVault">Delete Vault instance</a><br />
     CAUTION: You should not depend on a <strong>Development</strong> instance for productive use. 
 
 
+    <a name="AccessDemoApp"></a>
+
+    ### Access Vault API
+
+    **Warning**: This application is publicly accessible, make sure to delete the Kubernetes resources associated with the application when done.
+
+38. Dynamically obtain credentials to the Vault cluster managed by HCP by running these commands on your Terminal:
+
+    ```bash
+    export VAULT_ADDR=$(terraform output --raw vault_public_url)
+    export VAULT_TOKEN=$(terraform output --raw vault_root_token)
+    export VAULT_namespace=admin
+    ```
+    Examples of such values are:
+
+    * VAULT_ADDR = "https://hcp-vault-public-vault-9577a2dc.993dfd61.z1.hashicorp.cloud:8200"
+    <br /><br />
+
+    The above variables are sough by the Vault to authenticate client programs or custom applications.
+    See <a target="_blank" href="https://developer.hashicorp.com/vault/tutorials?optInFrom=learn">HashiCorp's Vault tutorials</a>.
+
+
+
     <a name="AccessEKS"></a>
     
     ### Access the EKS Cluster:
+
+37. Add new context AWS ARN into <tt>$HOME/.kube/config</tt> using awscli:
+
+    ```bash
+    aws eks --region us-west-2 update-kubeconfig \
+    --name $(terraform output --raw eks_cluster_name)
+    ```
 
 35. Obtain the contents of a kubeconfig file into your Clipboard:
 
@@ -308,63 +357,11 @@ L. <a href="#DeleteVault">Delete Vault instance</a><br />
             - system:nodes
     </pre>
 
-37. setting the `KUBECONFIG` environment variable ???
-
-
-    <a name="AccessDemoApp"></a>
-
-    ### Access Vault API
-
-    **Warning**: This application is publicly accessible, make sure to delete the Kubernetes resources associated with the application when done.
-
-38. Dynamically obtain credentials to the Vault instance managed by HCP by running these commands on your Terminal:
-
-    ```bash
-    export VAULT_ADDR=$(terraform output --raw vault_public_url)
-    export VAULT_TOKEN=$(terraform output --raw vault_root_token)
-    export VAULT_namespace=admin
-    ```
-
-39. Use the values to work with secrets from your Vault client program or custom application.
-
-    See [HashiCorp's Vault tutorials](https://developer.hashicorp.com/vault/tutorials?optInFrom=learn)
-
-    <a name="Upgrade"></a>
-
-
-Alternatively, find this info in the HCP portal:
-
-1.  On a browser login into HCP Portal:
-
-    <a target="_blank" href="https://portal.cloud.hashicorp.com">https://portal.cloud.hashicorp.com</a>
-
-2.  Click the name of your cluster (such as "my-vault").
-3.  Click "Private" link at the right of "Cluster URLs" to obtain a URL such as this in your Clipboard:
-
-    <a target="_blank" href="https://my-vault-private-vault-c6443333.9d787275.z1.hashicorp.cloud:8200">https://my-vault-private-vault-c6443333.9d787275.z1.hashicorp.cloud:8200</a>
-
-4.  Click "Public" link at the right of "Cluster URLs" to obtain a URL such as this in your Clipboard:
-    
-    <a target="_blank" href="https://my-vault-public-vault-c6443333.9d787275.z1.hashicorp.cloud:8200">https://my-vault-public-vault-c6443333.9d787275.z1.hashicorp.cloud:8200</a>
-
-5. Construct this line in Bash from your Clipboard contents from above:
-   
-    ```bash
-    export VAULT_ADDR=https://my-vault-public-vault-c6443333.9d787275.z1.hashicorp.cloud:8200
-    export VAULT_TOKEN=
-    export VAULT_NAMESPACE=admin
-    ```
-
-6.  Setup cli auth for kubectl through awscli:
-
-    ```bash
-    aws eks --region us-west-2 update-kubeconfig --name $(terraform output --raw eks_cluster_name)
-    terraform output --raw eks_cluster_name
-    ```
+37. TODO: Set the `KUBECONFIG` environment variable ???
 
     ### Configure Kube auth method for Vault:
 
-7.  Grab the kube auth info and stick it in ENVVARS:
+40. Grab the kube auth info and stick it in ENVVARS:
     ```bash
     export TOKEN_REVIEW_JWT=$(kubectl get secret \
     $(kubectl get serviceaccount vault -o jsonpath='{.secrets[0].name}') \
@@ -386,7 +383,7 @@ Alternatively, find this info in the HCP portal:
 
     ### Continue with configuration of Vault and deployment of Postgres, Vault agent, and Hashicups app
 
-8.  Enable the auth method and write the Kubernetes auth info into Vault:
+41. Enable the auth method and write the Kubernetes auth info into Vault:
     ```bash
     vault auth enable kubernetes
     ```
@@ -397,29 +394,29 @@ Alternatively, find this info in the HCP portal:
     kubernetes_ca_cert="$KUBE_CA_CERT"
     ```
 
-9.  Deploy Postgres:
+42. Deploy Postgres:
     ```bash 
     kubectl apply -f files/postgres.yaml
     ```
 
-10. Check that Postgres is running:
+43. Check that Postgres is running:
     ```bash
     kubectl get pods
     ```
 
-11. Grab the Postgres IP and then configure the Vault DB secrets engine:
+44. Grab the Postgres IP and then configure the Vault DB secrets engine:
     ```bash
     export POSTGRES_IP=$(kubectl get service -o jsonpath='{.status.loadBalancer.ingress[0].hostname}' postgres)
 
     echo $POSTGRES_IP
     ```
 
-12. Enable DB secrets:
+45. Enable DB secrets:
     ```bash
     vault secrets enable database
     ```
 
-13. Write the Vault configuration for the postgresDB deployed earlier:
+46. Write the Vault configuration for the postgresDB deployed earlier:
     ```bash
     vault write database/config/products \
         plugin_name=postgresql-database-plugin \
@@ -437,12 +434,12 @@ Alternatively, find this info in the HCP portal:
        max_ttl="24h"
     ```
 
-14. Ensure we can create credentials on the postgresDB with Vault:
+47. Ensure we can create credentials on the postgresDB with Vault:
     ```bash
     vault read database/creds/product
     ```
 
-15. Create policy in Vault:
+48. Create policy in Vault:
     ```bash
     vault policy write product files/product.hcl
 
@@ -453,40 +450,25 @@ Alternatively, find this info in the HCP portal:
         ttl=1h
     ```
 
-16. Deploy the product app:
+49. Deploy the product app:
     ```bash
     kubectl apply -f files/product.yaml
     ```
 
-17. Check the product app is running before moving on:
+50. Check the product app is running before moving on:
     ```bash
     kubectl get pods
     ```
 
-18. Set into background job:
+51. Set into background job:
     ```bash
     kubectl port-forward service/product 9090 &
     ```
 
-19. Test the app retrieves coffee info:
+52. Test the app retrieves coffee info:
     ```bash
     curl -s localhost:9090/coffees | jq .
     ```
-
-<hr />
-
-<a name="Upgrade"></a>
-
-### Upgrade for reliability    
-
-TODO:
-
-1. Click <strong>Replication</strong> on the left menu. Click "Read more about Vault replication".
-
-    Upgrading to a "Standard" instance provides <a target="_blank" href="https://n2ws.com/blog/how-to-guides/automate-amazon-ec2-instance-backup">backup</a> and auditing.
-
-    Upgrade to obtain <a target="_blank" href="https://developer.hashicorp.com/vault/docs/enterprise/replication">replication</a> needed for reliability.
-
 
 <hr />
 
