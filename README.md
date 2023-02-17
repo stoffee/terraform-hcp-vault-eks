@@ -8,21 +8,24 @@
 A. <a href="#Install">Install utility programs</a><br />
 B. <a href="#SetHCPEnv">Set HCP environment variables</a><br />
 C. <a href="#SelectExample">Select Example Deploy</a><br />
-D. <a href="#Edit_tfvars">Edit options in sample.auto.tfvars</a><br />
-E. <a href="#SetAWSEnv">Set AWS environment variables</a><br />
-F. <a href="#DeployTF">Run Terraform to Deploy</a><br />
+D. <a href="#ProductionDeploy">Production Deploy?</a><br />
 
-G. <a href="#ConfirmHCP">Confirm HCP</a><br />
-H. <a href="#ConfirmAWSGUI">Confirm resources in AWS GUI</a><br />
-I. &nbsp; <a href="#AccessVault">Obtain HCP Vault GUI URL</a><br />
-J. <a href="#ConfigVault">Configure Vault</a><br />
-K. <a href="#Create_Users">Create User Accounts</a><br />
+E. <a href="#Edit_tfvars">Edit options in sample.auto.tfvars</a><br />
+F. <a href="#SetAWSEnv">Set AWS environment variables</a><br />
+G. <a href="#ScanTF">Scan Terraform for vulnerabilities</a><br />
+H. <a href="#DeployTF">Run Terraform to Deploy</a><br />
+I. &nbsp; <a href="#ConfirmHCP">Confirm HCP</a><br />
+J. <a href="#ConfirmAWSGUI">Confirm resources in AWS GUI</a><br />
 
-L. <a href="#Vault_Tools">Use Vault Tools</a><br />
-M. <a href="#AccessDemoApp">Access Vault API</a><br />
+K. &nbsp; <a href="#AccessVault">Obtain HCP Vault GUI URL</a><br />
+L. <a href="#ConfigVault">Configure Vault</a><br />
+M. <a href="#Create_Users">Create User Accounts</a><br />
 
-N. <a href="#Upgrade">Manage Kubernetes</a><br />
-O. <a href="#DestroyVault">Destroy Vault instance</a><br />
+N. <a href="#Vault_Tools">Use Vault Tools</a><br />
+O. <a href="#AccessDemoApp">Access Vault API</a><br />
+
+P. <a href="#Upgrade">Manage Kubernetes</a><br />
+Q. <a href="#DestroyVault">Destroy Vault instance</a><br />
 
 <hr />
 
@@ -73,6 +76,7 @@ O. <a href="#DestroyVault">Destroy Vault instance</a><br />
 
 11. Click "Save" for the creation toast at the lower left. 
 12. Click "Generate key" at the right or "Create service principal key" in the middle of the screen.
+
 13. Click the icon for the <strong>Client ID</strong> to copy it into your Clipboard.
 14. Switch to your Terminal to type, then paste from Clipboard a command such as:
     ```bash
@@ -112,6 +116,11 @@ O. <a href="#DestroyVault">Destroy Vault instance</a><br />
     <a target="_blank" href="https://cloud.hashicorp.com/products/vault/pricing">https://cloud.hashicorp.com/products/vault/pricing</a>.
     
     Alternately, the <tt><strong>eks-hvn-only-deploy</strong></tt> example only creates the HVN (HashiCorp Network), which in AWS is the VPC (Virtual Private Cloud).
+
+
+    <a name="ProductionDeploy"></a>
+    
+    ### Production Deploy?
 
     TODO: Example <tt><strong>prod-eks</strong></tt> (production-high availability) constructs (at a higher cost) features not in dev deploys:
     * Larger "Standard" type of servers
@@ -169,9 +178,9 @@ O. <a href="#DestroyVault">Destroy Vault instance</a><br />
     export AWS_SECRET_ACCESS_KEY=abcdef12341uLY5oZCi5ILlWqyY++QpWEYnxz62w
     ```
 
-    <a name="DeployTF"></a>
+    <a name="ScanTF"></a>
 
-    ### Run Terraform to Deploy
+    ### Scan Terraform for vulnerabilities
 
 25. In the same Terminal window as the above step (or within a CI/CD workflow), run a static scan for security vulnerabilities in Terraform HCL:
     ```bash
@@ -181,6 +190,11 @@ O. <a href="#DestroyVault">Destroy Vault instance</a><br />
 
     WARNING: Do not continue until concerns raised by TFSec found are analyzed and remediated.
 
+
+    <a name="DeployTF"></a>
+
+    ### Run Terraform to Deploy
+
 26. In the same Terminal window as the above step (or within a CI/CD workflow), run the Terraform HCL to create the environment within AWS based on specifications in <tt>sample.auto.tfvars</tt>:
     ```bash
     terraform init
@@ -188,7 +202,7 @@ O. <a href="#DestroyVault">Destroy Vault instance</a><br />
     time terraform apply -auto-approve
     ```
 
-    Alternately, those who work with Terraform frequently define aliases such as <tt>tfi</tt>, <tt>tfp</tt>, <tt>tfa</tt> to reduce keystrokes and avoid typos.
+    PROTIP: Those who work with Terraform frequently define aliases such as <tt>tfi</tt>, <tt>tfp</tt>, <tt>tfa</tt> to reduce keystrokes and avoid typos.
 
     If successful, you should see metadata output about the instance just created:
     <pre>cluster_security_group_arn = "arn:aws:ec2:us-west-2:123456789123:security-group/sg-081e335dd11b10860"
@@ -221,11 +235,11 @@ O. <a href="#DestroyVault">Destroy Vault instance</a><br />
     vault_root_token = &LT;sensitive&LT;
     </pre>
 
-    A sample time output shows 22 minutes 11 seconds total clock time:
+    This sample time output shows 22 minutes 11 seconds total clock time:
 
     <pre>terraform apply -auto-approve  7.71s user 3.53s system 0% cpu 22:11.66 total</pre>
 
-27. One helpful design feature of Terraform HCL is that it's "declarative". So <tt>terraform apply</tt> can be run again. A sample response if no changes need to be made:
+29. One helpful design feature of Terraform HCL is that it's "declarative". So <tt>terraform apply</tt> can be run again. A sample response if no changes need to be made:
 
     ```bash
     No changes. Your infrastructure matches the configuration.
@@ -234,6 +248,8 @@ O. <a href="#DestroyVault">Destroy Vault instance</a><br />
 
     NOTE: Terraform verifies the status of resources in the cloud, but does not verify the correctness of API calls to each service.
 
+    When the 
+
 
     <a name="ConfirmHCP"></a>
 
@@ -241,38 +257,47 @@ O. <a href="#DestroyVault">Destroy Vault instance</a><br />
 
     Switch back to the HCP screen to confirm what has been built:
 
-36. In an internet browser, go to the HCP portal at <a href="https://portal.cloud.hashicorp.com/">[HCP dashboard](https://portal.cloud.hashicorp.com)</a>
+36. In an internet browser, go to the <a href="https://portal.cloud.hashicorp.com/">HCP portal Dashboard at https://portal.cloud.hashicorp.com</a>
 37. Click the blue "View Vault".
-38. Click the Vault ID text -- the text above "Running" for the <strong>Overview</strong> page for your Vault instance managed by HCP.
-39. PROTIP: For quicker access in the future, save the URL in your browser bookmarks. Let's examine the <strong>Cluster Details</strong> such as this:
+38. Click the Vault ID text -- the text above "Running" for the <strong>Overview</strong> page for your Vault instance managed by HCP. The <strong>Cluster Details</strong> page should appear, such as this:
 
     <a target="_blank" href="https://res.cloudinary.com/dcajqrroq/image/upload/v1676446677/hcp-vault-dev-320x475_gh8olg.jpg"><img src="https://res.cloudinary.com/dcajqrroq/image/upload/v1676446677/hcp-vault-dev-320x475_gh8olg.jpg"></a>
     
     Notice that the instance created is an instance that's "Extra Small", with No HA (High Availability) of clusters duplicated across several Availability Zones.
 
-    CAUTION: You should not rely on a <strong>Development</strong> instance for productive use. 
+    CAUTION: You should not rely on a <strong>Development</strong> instance for productive use. Data in Development instances are forever lost when the server is stopped.
 
+39. PROTIP: For quicker access in the future, save the URL in your browser bookmarks.
 
     <a name="ConfirmAWSGUI"></a>
 
     ### Confirm resources in AWS GUI
 
-25. Use the AWS Account, User Name, and Password associated with the <a href="#SetAWSEnv">AWS variables</a> mentioned above to view different services in the AWS Management Console GUI:
+40. Use the AWS Account, User Name, and Password associated with the <a href="#SetAWSEnv">AWS variables</a> mentioned above to view different services in the AWS Management Console GUI:
 
-    * <a target="_blank" href="https://console.aws.amazon.com/vpc/">VPC</a> (Virtual Private Cloud) with  Subnets, Route Tables, Gateways, Network ACLs, Peering, etc.
-    * <a target="_blank" href="https://console.aws.amazon.com/ec2/">EC2</a> with Security Groups, Elastic IPs, Node Groups, Volumes, etc.
-    * <a target="_blank" href="https://console.aws.amazon.com/eks/">Elastic Kubernetes Service</a>
+    1. <a target="_blank" href="https://console.aws.amazon.com/eks/">Elastic Kubernetes Service</a> Node Groups (generated), EKS cluster
+    2. <a target="_blank" href="https://console.aws.amazon.com/vpc/">VPC</a> (Virtual Private Cloud) NAT Gateways, Network interfaces, Elastic IPs, Subnets, Internet Gateways, Route Tables, Peering connections, Network ACLs, Peering, etc.
+    3. <a target="_blank" href="https://console.aws.amazon.com/ec2/">EC2</a> with Instances, Security Groups, Elastic IPs, Node Groups, Volumes, etc.
+    4. <a target="_blank" href="https://console.aws.amazon.com/ebs/">EBS</a> (Elastic Block Store)
+    5. <a target="_blank" href="https://console.aws.amazon.com/kms/">KMS</a> (Key Management Service)
+    6. <a target="_blank" href="https://console.aws.amazon.com/cloudwatch/">CloudWatch</a> Log groups
     <br /><br />    
 
-    NOTE: Vault in Development mode operates an in-memory database and so does not require an external database.
+    NOTE: Vault in Development mode operates an <strong>in-memory</strong> database and so does not require an external database.
 
+41. CAUTION: Please resist changing resources using the AWS Management Console GUI, which breaks version controls and renders obsolete the state files created when the resources were provisioned.
+    
+42. The list of resources created can be obtained:
+    ```bash
+    terraform state list
+    ```
 
     <a name="AccessVault"></a>
 
     ### Obtain HCP Vault GUI URL:
 
-26. Be at the browser window you will add a new tab for the Vault UI.
-27. Open a browser window to your HCP Vault cluster URL obtained automatically (on a Mac):
+43. Be at the browser window you will add a new tab for the Vault UI.
+44. Open a browser window to your HCP Vault cluster URL obtained automatically (on a Mac):
 
     ```bash
     open $(terraform output --raw vault_public_url)
@@ -285,23 +310,25 @@ O. <a href="#DestroyVault">Destroy Vault instance</a><br />
 
     <a target="_blank" href="https://res.cloudinary.com/dcajqrroq/image/upload/v1675396720/vault-hcp-signin-468x397_g5twps.jpg"><img width="400" src="https://res.cloudinary.com/dcajqrroq/image/upload/v1675396720/vault-hcp-signin-468x397_g5twps.jpg"></a>
 
-28. PROTIP: Optionally, save the URL in your browser for quicker access in the future.
+    REMEMBER: The "administrator for login credentials" are automatically provided an <strong>/admin</strong> namespace within Vault.
 
-29. Copy the admin Token into your Clipboard for "Sign in to Vault" (on a Mac). 
+45. PROTIP: Optionally, save the URL in your browser for quicker access in the future.
+
+46. Copy the admin Token into your Clipboard for "Sign in to Vault" (on a Mac). 
     ```bash
     terraform output --raw vault_root_token | pbcopy
     ```
-    That is equivalent to clicking <strong>Generate token</strong> under "New admin token" on your HCP Vault Overview page.
+    That is equivalent to clicking <strong>Generate token</strong>, then <strong>Copy</strong> (to Clipboard) under "New admin token" on your HCP Vault Overview page.
 
     CAUTION: Do not share this token with others. Create a separate account for each user.
 
-30. Click <strong>Token</strong> selection under the "Method" heading within the "Sign in" form.
+47. Click <strong>Token</strong> selection under the "Method" heading within the "Sign in" form.
 
     NOTE: A generated token is one of <a target="_blank" href="https://developer.hashicorp.com/vault/docs/auth">many Authentication Methods</a> supported by Vault.
 
-31. Click in the <strong>Token</strong> field within the "Sign in" form, then paste the token.
+48. Click in the <strong>Token</strong> field within the "Sign in" form, then paste the token.
 
-32. Click the blue "Sign in" (as Administrator).
+49. Click the blue "Sign in" (as Administrator).
 
     NOTE: As the Administrator, you have, by default, access to Vault's <a target="_blank" href="https://developer.hashicorp.com/vault/docs/secrets/cubbyhole">>cubbyhole/</a>. of the industry's widest support of <a target="_blank" href="https://developer.hashicorp.com/vault/docs/secrets">Secrets Engines</a>.
 
@@ -315,21 +342,21 @@ O. <a href="#DestroyVault">Destroy Vault instance</a><br />
     <a name="ConfigVault"></a>
     ### Configure Vault
 
-33. Click "Access" on the <a href="#VaultMenu">menu</a>:
+33. Click "Access" on the <a href="#VaultMenu">menu</a> to manage mechanisms that Vault provides other systems to control access:
 
     <a target="_blank" href="https://res.cloudinary.com/dcajqrroq/image/upload/v1675424226/vault-hcp-access-menu-212x267_qkyci7.jpg"><img width="212" height="267" src="https://res.cloudinary.com/dcajqrroq/image/upload/v1675424226/vault-hcp-access-menu-212x267_qkyci7.jpg"></a>
 
     Tutorials and Documentation on each menu item:
-    * <a target="_blank" href="https://developer.hashicorp.com/vault/docs/auth">Auth Methods</a>
-    * <a target="_blank" href="https://developer.hashicorp.com/hcp/docs/hcp/security/mfa">Multi-factor authentication</a>
-    * <a target="_blank" href="https://developer.hashicorp.com/vault/tutorials/auth-methods/identity">Entities</a>
-    * <a target="_blank" href="https://developer.hashicorp.com/vault/tutorials/enterprise/control-groups">Groups</a>
-    * <a target="_blank" href="https://developer.hashicorp.com/vault/docs/concepts/lease">Leases</a>
-    * <a target="_blank" href="https://developer.hashicorp.com/vault/tutorials/cloud/vault-namespaces">Namespaces</a>
+    * <a target="_blank" href="https://developer.hashicorp.com/vault/docs/auth">Auth Methods</a> define authentication and authorization.
+    * <a target="_blank" href="https://developer.hashicorp.com/hcp/docs/hcp/security/mfa">Multi-factor authentication</a> 
+    * <a target="_blank" href="https://developer.hashicorp.com/vault/tutorials/auth-methods/identity">Entities</a> define <strong>aliases</strong> mapped to a common property among different accounts
+    * <a target="_blank" href="https://developer.hashicorp.com/vault/tutorials/enterprise/control-groups">Groups</a> enable several client users of the same kind to be managed together
+    * <a target="_blank" href="https://developer.hashicorp.com/vault/docs/concepts/lease">Leases</a> are used to limit the lifetimes of TTL (Time To Live) granted to access resources
+    * <a target="_blank" href="https://developer.hashicorp.com/vault/tutorials/cloud/vault-namespaces">Namespaces</a> (a licensed Enterprise "multi-tenancy" feature) separates access to data among several tenants (groups of users in unrelated groups)
     * <a target="_blank" href="https://developer.hashicorp.com/vault/tutorials/auth-methods/oidc-identity-provider">OIDC Provider</a> [<a target="_blank" href="https://developer.hashicorp.com/vault/docs/secrets/identity/oidc-provider">doc</a>]
     <br /><br />
 
-    * <a target="_blank" href="https://developer.hashicorp.com/vault/tutorials/cloud/vault-policies">Policies</a>
+    * <a target="_blank" href="https://developer.hashicorp.com/vault/tutorials/cloud/vault-policies">Policies</a> provide a declarative way to grant or forbid access to certain paths and operations in Vault.
 
 
     <a name="Vault_Tools"></a>
