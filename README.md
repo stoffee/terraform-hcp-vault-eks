@@ -5,6 +5,7 @@
 
 ## Deployment
 
+A. <a href="#Why">Why this way (using Terraform)</a><br />
 A. <a href="#Install">Install utility programs</a><br />
 B. <a href="#SetHCPEnv">Set HCP environment variables</a><br />
 C. <a href="#SelectExample">Select Example Deploy</a><br />
@@ -22,12 +23,54 @@ L. <a href="#ConfigVault">Configure Vault</a><br />
 M. <a href="#Create_Users">Create User Accounts</a><br />
 
 N. <a href="#Vault_Tools">Use Vault Tools</a><br />
-O. <a href="#AccessDemoApp">Access Vault API</a><br />
+O. <a href="#AccessVaultCLI">Access Vault using CLI</a><br />
+P. <a href="#AccessVaultAPI">Access Vault API programming</a><br />
 
-P. <a href="#Upgrade">Manage Kubernetes</a><br />
-Q. <a href="#DestroyVault">Destroy Vault instance</a><br />
+Q. <a href="#Upgrade">Manage Kubernetes</a><br />
+R. <a href="#DestroyVault">Destroy Vault instance</a><br />
 
 <hr />
+
+<a name="Why"></a>
+### Why this way? #
+
+There are several ways to create a HashiCorp Vault instance.
+
+The approach as described in this tutorial has the following advantages:
+
+1.  Use of a CI/CD pipeline to version every change, automated scanning of Terraform for vulnerabilities (using TFSec and other utilities), and confirmation that policies-as-code are not violated.
+
+2.  Use of <strong>pre-defined</strong> Terraform <strong>modules</strong> which have been reviewed by several experienced professionals to contain secure defaults and mechanisms for <a target="_blank" href="https://developer.hashicorp.com/vault/tutorials/operations/production-hardening">security hardening</a> that include:
+
+    * RBAC settings by <strong>persona</strong> for Least-privilege permissions (separate accounts to read but not delete)
+
+    * Verification and automated implementation of the latest TLS certificate version and Customer-provided keys
+    * End-to-End encryption to protect communications, logs, and all data at rest
+    * Automatic dropping of invalid headers
+    * Logging enabled for audit and forwarding
+    * Automatic movement of logs to a SIEM (such as Splunk) for analytics and alerting
+    * Automatic purging of logs to conserve disk space usage
+    * Purge protection on KMS keys and Volumes
+
+    * Enabled automatic secrets rotation, auto-repair, auto-upgrade
+    * Disabled operating system swap to prevent the from paging sensitive data to disk. This is especially important when using the integrated storage backend.
+    * Disable operating system core dumps which may contain sensitive information
+    * etc.
+    <br /><br />
+
+3.  Use of Infrastructure-as-Code enables quicker response to security changes identified over time, such as for EC2 IMDSv2.
+
+4.  Ease of use: Use of the HCP GUI means no complicated commands to remember, especially to perform emergency "break glass" procedures to stop Vault operation in case of an intrusion. 
+
+5.  Use of "feature flags" to optionally include Kubernetes add-ons needed for production-quality use:
+    * DNS
+    * Observability Extraction (Prometheus)
+    * Analytics (dashboarding) of metrics (Grafana)
+    * Scalabiity (Kubernetes Operator Crossplane)
+    * Verification of endpoints
+    * Troubleshooting
+    * etc.
+    <br /><br />
 
 <a name="Install"></a>
 
@@ -375,9 +418,9 @@ Q. <a href="#DestroyVault">Destroy Vault instance</a><br />
 34. Create an account for the Admin to use when doing developer persona work. This limits lateral movement by hackers to do damage if credentials are compromised.
 
 
-    <a name="AccessDemoApp"></a>
+    <a name="AccessVaultCLI"></a>
 
-    ### &#9744; Access Vault API
+    ### &#9744; Access Vault via CLI
 
     **Warning**: This application is publicly accessible, make sure to destroy the Kubernetes resources associated with the application when done.
 
@@ -396,6 +439,25 @@ Q. <a href="#DestroyVault">Destroy Vault instance</a><br />
     The above variables are sough by the Vault to authenticate client programs or custom applications.
     See <a target="_blank" href="https://developer.hashicorp.com/vault/tutorials?optInFrom=learn">HashiCorp's Vault tutorials</a>.
 
+39. <a target="_blank" href="https://www.youtube.com/watch?v=lsWOx9bzAwY">Obtain</a> a list of Authentication Methods setup, to ensure that "JWT" needed for GitHub is available:
+    ```bash
+    vault auth list
+    ```
+40. View settings:
+    ```bash
+    vault read auth/jwt/role/github-actions-role
+    ```
+40. List secrets engines enabled within Vault:
+    ```bash
+    vault secrets list
+    ```
+
+    <a name="AccessVaultAPI"></a>
+
+    ### &#9744; Access Vault using API Programming
+
+41. See tutorials about application programs interacting with Vault:
+    * https://wilsonmar.github.io/hello-vault
 
 
     <a name="AccessEKS"></a>
@@ -563,11 +625,13 @@ PROTIP: Because this repo enables a new Vault cluster to be easily created in HC
 3.  <a href="#SignInHCP">Sign in HCP Portal GUI</a> as an Administrator, at the <strong>Overview</strong> page of your Vault instance in HCP.
 4.  PROTIP: Click <strong>API Lock</strong> to stop all users from updating data in the Vault instance.
 
+    NOTE: There is also a "<a target="_blank" href="https://developer.hashicorp.com/vault/tutorials/operations/emergency-break-glass-features">break glass</a>" procedure that <strong>seals</strong> the Vault server that physically blocks respose to all requests (with the exception of status checks and unsealing.discards its in-memory key for unlocking data).
+
 5.  If you ran Terraform to create the cluster, there is no need to click <strong>Manage</strong> at the upper right for this menu:
 
     <a target="_blank" href="https://res.cloudinary.com/dcajqrroq/image/upload/v1675389154/vault-hcp-manage-drop-410x306_ehwn0c.jpg"><img width="400" src="https://res.cloudinary.com/dcajqrroq/image/upload/v1675389154/vault-hcp-manage-drop-410x306_ehwn0c.jpg"></a>
 
-    DO NOT click the red <strong>Delete cluster</strong> square nor type "DELETE" to confirm.
+    If you used Terraform to create the cluster, DO NOT click the GUI red <strong>Delete cluster</strong> square nor type "DELETE" to confirm.
 
 6.  In your Mac Terminal, set credentials for the same AWS account you used to create the cluster.
 7.  <a href="#SelectExample">navigate to the folder</a> holding the <tt>sample.auto.tfvars</tt> file when Terraform was run.
