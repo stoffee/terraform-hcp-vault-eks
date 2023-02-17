@@ -17,7 +17,7 @@ H. <a href="#DeployTF">Run Terraform to Deploy</a><br />
 I. &nbsp; <a href="#ConfirmHCP">Confirm HCP</a><br />
 J. <a href="#ConfirmAWSGUI">Confirm resources in AWS GUI</a><br />
 
-K. &nbsp; <a href="#AccessVault">Obtain HCP Vault GUI URL</a><br />
+K. <a href="#AccessVault">Obtain HCP Vault GUI URL</a><br />
 L. <a href="#ConfigVault">Configure Vault</a><br />
 M. <a href="#Create_Users">Create User Accounts</a><br />
 
@@ -31,7 +31,7 @@ Q. <a href="#DestroyVault">Destroy Vault instance</a><br />
 
 <a name="Install"></a>
 
-###     Install utility programs
+### &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &#9744; Install utility programs
 
 1.  If you are using a MacOS machine, install Apple's utilities, then Homebrew formulas:
 
@@ -44,7 +44,7 @@ Q. <a href="#DestroyVault">Destroy Vault instance</a><br />
     
     <a name="SetHCPEnv"></a>
 
-    ### Set HCP environment variables
+    ### &#9744; Set HCP environment variables
 
     Below are steps to obtain credentials used to set up HCP within AWS:
     ```bash
@@ -91,7 +91,7 @@ Q. <a href="#DestroyVault">Destroy Vault instance</a><br />
 
     <a name="SelectExample"></a>
     
-    ### Select Example Deploy
+    ### &#9744; Select Example Deploy
  
 18. Obtain a copy of the repository onto your laptop:
     ```bash
@@ -120,7 +120,7 @@ Q. <a href="#DestroyVault">Destroy Vault instance</a><br />
 
     <a name="ProductionDeploy"></a>
     
-    ### Production Deploy?
+    ### &#9744; Production Deploy?
 
     TODO: Example <tt><strong>prod-eks</strong></tt> (production-high availability) constructs (at a higher cost) features not in dev deploys:
     * Larger "Standard" type of servers
@@ -140,7 +140,7 @@ Q. <a href="#DestroyVault">Destroy Vault instance</a><br />
 
     <a name="Edit_tfvars"></a>
 
-    ### Edit options in sample.auto.tfvars
+    ### &#9744; Edit options in sample.auto.tfvars
 
 22. Rename <tt>sample.auto.tfvars_example</tt> to <tt>sample.auto.tfvars</tt>
 
@@ -170,7 +170,7 @@ Q. <a href="#DestroyVault">Destroy Vault instance</a><br />
 
     <a name="SetAWSEnv"></a>
 
-    ### Set AWS environment variables:
+    ### &#9744; Set AWS environment variables:
 
 24. In the Terminal window, you will use to run Terraform in the next step, set the AWS account credentials used to build your Vault instance, such as:
     ```bash
@@ -180,7 +180,7 @@ Q. <a href="#DestroyVault">Destroy Vault instance</a><br />
 
     <a name="ScanTF"></a>
 
-    ### Scan Terraform for vulnerabilities
+    ### &#9744; Scan Terraform for vulnerabilities
 
 25. In the same Terminal window as the above step (or within a CI/CD workflow), run a static scan for security vulnerabilities in Terraform HCL:
     ```bash
@@ -193,7 +193,7 @@ Q. <a href="#DestroyVault">Destroy Vault instance</a><br />
 
     <a name="DeployTF"></a>
 
-    ### Run Terraform to Deploy
+    ### &#9744; Run Terraform to Deploy
 
 26. In the same Terminal window as the above step (or within a CI/CD workflow), run the Terraform HCL to create the environment within AWS based on specifications in <tt>sample.auto.tfvars</tt>:
     ```bash
@@ -253,7 +253,7 @@ Q. <a href="#DestroyVault">Destroy Vault instance</a><br />
 
     <a name="ConfirmHCP"></a>
 
-    ### Confirm HCP
+    ### &#9744; Confirm HCP
 
     Switch back to the HCP screen to confirm what has been built:
 
@@ -271,7 +271,7 @@ Q. <a href="#DestroyVault">Destroy Vault instance</a><br />
 
     <a name="ConfirmAWSGUI"></a>
 
-    ### Confirm resources in AWS GUI
+    ### &#9744; Confirm resources in AWS GUI
 
 40. Use the AWS Account, User Name, and Password associated with the <a href="#SetAWSEnv">AWS variables</a> mentioned above to view different services in the AWS Management Console GUI:
 
@@ -279,9 +279,9 @@ Q. <a href="#DestroyVault">Destroy Vault instance</a><br />
     2. <a target="_blank" href="https://console.aws.amazon.com/vpc/">VPC</a> (Virtual Private Cloud) NAT Gateways, Network interfaces, Elastic IPs, Subnets, Internet Gateways, Route Tables, Peering connections, Network ACLs, Peering, etc.
     3. <a target="_blank" href="https://console.aws.amazon.com/ec2/">EC2</a> with Instances, Security Groups, Elastic IPs, Node Groups, Volumes, etc.
     4. <a target="_blank" href="https://console.aws.amazon.com/ebs/">EBS</a> (Elastic Block Store)
-    5. <a target="_blank" href="https://console.aws.amazon.com/kms/">KMS</a> (Key Management Service)
+    5. <a target="_blank" href="https://console.aws.amazon.com/kms/">KMS</a> (Key Management Service) Aliases, Customer Managed Keys
     6. <a target="_blank" href="https://console.aws.amazon.com/cloudwatch/">CloudWatch</a> Log groups
-    <br /><br />    
+    <br /><br />
 
     NOTE: Vault in Development mode operates an <strong>in-memory</strong> database and so does not require an external database.
 
@@ -294,7 +294,7 @@ Q. <a href="#DestroyVault">Destroy Vault instance</a><br />
 
     <a name="AccessVault"></a>
 
-    ### Obtain HCP Vault GUI URL:
+    ### &#9744; Obtain HCP Vault GUI URL:
 
 43. Be at the browser window you will add a new tab for the Vault UI.
 44. Open a browser window to your HCP Vault cluster URL obtained automatically (on a Mac):
@@ -340,7 +340,7 @@ Q. <a href="#DestroyVault">Destroy Vault instance</a><br />
 
 
     <a name="ConfigVault"></a>
-    ### Configure Vault
+    ### &#9744; Configure Vault
 
 33. Click "Access" on the <a href="#VaultMenu">menu</a> to manage mechanisms that Vault provides other systems to control access:
 
@@ -361,7 +361,7 @@ Q. <a href="#DestroyVault">Destroy Vault instance</a><br />
 
     <a name="Vault_Tools"></a>
 
-    ### Use Vault Tools GUI
+    ### &#9744; Use Vault Tools GUI
 
 34. Click <strong>Tools</strong> in the Vault menu to encrypt and decrypt pasted in then copied from your Clipboard.
 
@@ -370,14 +370,14 @@ Q. <a href="#DestroyVault">Destroy Vault instance</a><br />
 
     <a name="Create_Users"></a>
 
-    ### Create User Accounts
+    ### &#9744; Create User Accounts
 
 34. Create an account for the Admin to use when doing developer persona work. This limits lateral movement by hackers to do damage if credentials are compromised.
 
 
     <a name="AccessDemoApp"></a>
 
-    ### Access Vault API
+    ### &#9744; Access Vault API
 
     **Warning**: This application is publicly accessible, make sure to destroy the Kubernetes resources associated with the application when done.
 
@@ -400,7 +400,7 @@ Q. <a href="#DestroyVault">Destroy Vault instance</a><br />
 
     <a name="AccessEKS"></a>
     
-    ### Access the EKS Cluster:
+    ### &#9744; Access the EKS Cluster:
 
 39. Set the <strong>context</strong> within local file <tt>$HOME/.kube/config</tt> so local awscli and kubectl commands know the AWS ARN to access:
     ```bash
@@ -438,7 +438,7 @@ Q. <a href="#DestroyVault">Destroy Vault instance</a><br />
 
 42. TODO: Set the `KUBECONFIG` environment variable ???
 
-    ### Configure Kube auth method for Vault:
+    ### &#9744; Configure Kube auth method for Vault:
 
 43. Grab the kube auth info and stick it in ENVVARS:
     ```bash
@@ -460,7 +460,7 @@ Q. <a href="#DestroyVault">Destroy Vault instance</a><br />
     echo $KUBE_HOST
     ```
 
-    ### Continue with configuration of Vault and deployment of Postgres, Vault agent, and Hashicups app
+    ### &#9744; Continue with configuration of Vault and deployment of Postgres, Vault agent, and Hashicups app
 
 44. Enable the auth method and write the Kubernetes auth info into Vault:
     ```bash
