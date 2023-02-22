@@ -1,0 +1,9 @@
+cluster_id           = "my-eks-cluster-name"
+deploy_hvn           = true
+hvn_id               = "hcp-hvn-eks"
+hvn_region           = "us-west-2"
+deploy_vault_cluster = true
+hcp_vault_cluster_id = "my-vault"
+make_vault_public    = true
+deploy_eks_cluster   = true
+vpc_region           = "us-west-2"
