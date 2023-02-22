@@ -89,7 +89,7 @@ The approach as described in this tutorial has the following advantages:
 
 <a name="Install"></a>
 
-### &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &#9744; Install utility programs
+### &nbsp; &nbsp; &nbsp; &nbsp; &#9744; Install utility programs
 
 1.  If you are using a MacOS machine, install Apple's utilities, then Homebrew formulas:
 
