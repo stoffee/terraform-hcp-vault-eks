@@ -1,11 +1,10 @@
 cluster_id = "blue-blazer"
 deploy_hvn = true
-# TThe HVN_ID should be your existing HVN_ID
+# The HVN_ID should be your existing HVN_ID
 hvn_id               = "eks-hvn"
 hvn_region           = "us-west-2"
 deploy_vault_cluster = true
 # This is the name of your existing HCP Vault Cluster
 hcp_vault_cluster_id = "vault-mycompany-io"
-make_vault_public    = true
 deploy_eks_cluster   = true
 vpc_region           = "us-west-2"

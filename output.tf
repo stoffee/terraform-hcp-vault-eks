@@ -7,7 +7,7 @@ output "vault_root_token" {
   sensitive = true
 }
 
-output "vault_priate_url" {
+output "vault_private_url" {
   value = var.deploy_vault_cluster ? hcp_vault_cluster.new_vault_cluster[0].vault_private_endpoint_url : data.hcp_vault_cluster.existing_vault_cluster[0].vault_private_endpoint_url
 }
 

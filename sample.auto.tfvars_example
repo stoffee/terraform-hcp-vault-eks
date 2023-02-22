@@ -1,5 +1,6 @@
 hvn_id               = "hcp-hvn"
 deploy_vault_cluster = true
+make_vault_public    = true
 hvn_region           = "us-west-2"
 vpc_region           = "us-west-2"
 cluster_id           = "my-vault"
