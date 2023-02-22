@@ -4,7 +4,8 @@
 automates (eliminates much of) the <a target="_blank" href="https://developer.hashicorp.com/vault/tutorials/cloud/get-started-vault">manual effort</a> 
 to create a <strong>Highly Available (HA) Vault service</strong> within an AWS EKS (Elastic Kubernetes Service) cluster managed by the HCP (HashiCorp Cloud Platform) -- the quickest and most secure and repeatable way to do so.
 
-This module can also be customized to only deploy what you need. Changes to HCL code triggers HCP to automatically run a script ??? which includes a vulnerbility scan (using TFlint and TFsec) of Terraform HCL between terraform plan and apply.
+What is installed through this repo is done by <a target="_blank" href="https://registry.terraform.io/modules/stoffee/vault-eks/hcp/latest">a module on terraform.io</a>. 
+be customized. Changes to HCL code triggers HCP to automatically run a script ??? which includes a vulnerability scan (using TFlint and TFsec) of Terraform HCL between terraform plan and apply.
 
 Also included is a sample application (HashiCups) with a Postgresql database which creates temporary database credentials for distribution using HashiCorp's unique "AppRole" authenication from a Vault one-time access Cubbyhole.
 
