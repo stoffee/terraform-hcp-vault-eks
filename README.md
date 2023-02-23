@@ -6,8 +6,9 @@ to create a <strong>Highly Available (HA) Vault service</strong> in an AWS EKS (
 
 Automation invoked through this repo references modules in the <a target="_blank" href="https://registry.terraform.io/">https://registry.terraform.io</a>. Each module was coded with variables to allow for customization. 
 
-<!-- TODO: Also included is a sample application (HashiCups) to show how to replace static (unsecure long-term) passwords with dynamically created ones for use during a short window of time. We show how to arrange for PostgreSQL database to create temporary database credentials for distribution using HashiCorp's unique "AppRole" authentication method from a Vault one-time access Cubbyhole.
--->
+TODO: GitHub Actions workflows are included here to have a working example of how to retrieve secrets from Vault.
+
+TODO: Also included is a sample application (HashiCups) to show how to replace static (unsecure long-term) passwords with dynamically created ones for use during a short window of time. We show how to arrange for PostgreSQL database to create temporary database credentials for distribution using HashiCorp's unique "AppRole" authentication method from a Vault one-time access Cubbyhole.
 
 <hr />
 
