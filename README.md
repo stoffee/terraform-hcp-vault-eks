@@ -2,11 +2,12 @@
 
 <a target="_blank" href="https://github.com/stoffee/terraform-hcp-vault-eks">This repo</a> 
 automates (eliminates much of) the <a target="_blank" href="https://developer.hashicorp.com/vault/tutorials/cloud/get-started-vault">manual effort</a> 
-to create a <strong>Highly Available (HA) Vault service</strong> within an AWS EKS (Elastic Kubernetes Service) cluster managed by the HCP (HashiCorp Cloud Platform) -- the quickest and most secure and repeatable way to do so.
+to create a <strong>Highly Available (HA) Vault service</strong> in an AWS EKS (Elastic Kubernetes Service) cluster managed by the HCP (HashiCorp Cloud Platform) -- the quickest and most secure and repeatable way to do so.
 
-Core automation invoked through this repo references modules in the <a target="_blank" href="https://registry.terraform.io/">https://registry.terraform.io</a>. Each module was coded with variables to allow for customization. 
+Automation invoked through this repo references modules in the <a target="_blank" href="https://registry.terraform.io/">https://registry.terraform.io</a>. Each module was coded with variables to allow for customization. 
 
-Also included is a sample application (HashiCups) with a Postgresql database which creates temporary database credentials for distribution using HashiCorp's unique "AppRole" authenication from a Vault one-time access Cubbyhole.
+<!-- TODO: Also included is a sample application (HashiCups) to show how to replace static (unsecure long-term) passwords with dynamically created ones for use during a short window of time. We show how to arrange for PostgreSQL database to create temporary database credentials for distribution using HashiCorp's unique "AppRole" authentication method from a Vault one-time access Cubbyhole.
+-->
 
 <hr />
 
