@@ -372,9 +372,9 @@ The approach as described in this tutorial has the following advantages:
 31. Use the AWS Account, User Name, and Password associated with the <a href="#SetAWSEnv">AWS variables</a> mentioned above to view different services in the AWS Management Console GUI <a target="_blank" href="https://us-east-1.console.aws.amazon.com/cost-management/home?region=us-east-1#/dashboard">AWS Cost Explorer</a>:
 
     1. <a target="_blank" href="https://console.aws.amazon.com/eks/">Elastic Kubernetes Service</a> Node Groups (generated), EKS cluster
-    2. <a target="_blank" href="https://console.aws.amazon.com/vpc/">VPC</a> (Virtual Private Cloud) NAT Gateways, Network interfaces, Elastic IPs, Subnets, Internet Gateways, Route Tables, Peering connections, Network ACLs, Peering, etc.
-    3. <a target="_blank" href="https://console.aws.amazon.com/ec2/">EC2</a> with Instances, Security Groups, Elastic IPs, Node Groups, Volumes, etc.
-    4. <a target="_blank" href="https://console.aws.amazon.com/ebs/">EBS</a> (Elastic Block Store)
+    2. <a target="_blank" href="https://console.aws.amazon.com/vpc/">VPC</a> (Virtual Private Cloud) Peering connections, NAT Gateways, Network interfaces, Subnets, Internet Gateways, Route Tables,  Network ACLs, Peering, etc.
+    3. <a target="_blank" href="https://console.aws.amazon.com/ec2/">EC2</a> with Elastic IPs, Instances, Elastic IPs, Node Groups, Volumes, Launch Templates, Security Groups
+    4. <a target="_blank" href="https://console.aws.amazon.com/ebs/">EBS</a> (Elastic Block Store) volumes
     5. <a target="_blank" href="https://console.aws.amazon.com/kms/">KMS</a> (Key Management Service) Aliases, Customer Managed Keys
     6. <a target="_blank" href="https://console.aws.amazon.com/cloudwatch/">CloudWatch</a> Log groups
     7. <a target="_blank" href="https://console.aws.amazon.com/guardduty/">AWS Guard Duty</a> 
