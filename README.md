@@ -4,7 +4,7 @@
 automates (eliminates much of) the <a target="_blank" href="https://developer.hashicorp.com/vault/tutorials/cloud/get-started-vault">manual effort</a> 
 to create a <strong>Highly Available (HA) Vault service</strong> in an AWS EKS (Elastic Kubernetes Service) cluster managed by the HCP (HashiCorp Cloud Platform) -- the quickest and most secure and repeatable way to do so.
 
-<a target="_blank" href="https://res.cloudinary.com/dcajqrroq/image/upload/v1677203725/instant-hcp-vault-1690x644_batxac.jpg"><img alt="instant-hcp-vault-1690x644.jpg" width="1690" src="https://res.cloudinary.com/dcajqrroq/image/upload/v1677203725/instant-hcp-vault-1690x644_batxac.jpg"></a>
+<a target="_blank" href="https://res.cloudinary.com/dcajqrroq/image/upload/v1677204002/instant-hcp-vault-1684x644_ecrk3k.jpg"><img alt="instant-hcp-vault-1684x644.jpg" width="1684" width="644"  src="https://res.cloudinary.com/dcajqrroq/image/upload/v1677204002/instant-hcp-vault-1684x644_ecrk3k.jpg"></a>
 
 Automation invoked through this repo references modules in the <a target="_blank" href="https://registry.terraform.io/">https://registry.terraform.io</a>. Each module was coded with variables to allow for customization. 
 
