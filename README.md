@@ -4,7 +4,7 @@
 automates (eliminates much of) the <a target="_blank" href="https://developer.hashicorp.com/vault/tutorials/cloud/get-started-vault">manual effort</a> 
 to create a <strong>Highly Available (HA) Vault service</strong> in an AWS EKS (Elastic Kubernetes Service) cluster managed by the HCP (HashiCorp Cloud Platform) -- the quickest and most secure and repeatable way to do so.
 
-<a target="_blank" href="https://res.cloudinary.com/dcajqrroq/image/upload/v1677204002/instant-hcp-vault-1684x644_ecrk3k.jpg"><img alt="instant-hcp-vault-1684x644.jpg" width="1684" width="644"  src="https://res.cloudinary.com/dcajqrroq/image/upload/v1677204002/instant-hcp-vault-1684x644_ecrk3k.jpg"></a>
+<a target="_blank" href="https://res.cloudinary.com/dcajqrroq/image/upload/v1677204614/instant-hcp-vault-1680x650_f17yi9.jpg"><img alt="iinstant-hcp-vault-1680x650.jpg" width="1680" width="650"  src="https://res.cloudinary.com/dcajqrroq/image/upload/v1677204614/instant-hcp-vault-1680x650_f17yi9.jpg"></a>
 
 Automation invoked through this repo references modules in the <a target="_blank" href="https://registry.terraform.io/">https://registry.terraform.io</a>. Each module was coded with variables to allow for customization. 
 
@@ -117,7 +117,7 @@ The approach as described in this tutorial has the following advantages:
     export AWS_ACCESS_KEY_ID=ZXYRQPONMLKJIHGFEDCBA
     export AWS_SECRET_ACCESS_KEY=abcdef12341uLY5oZCi5ILlWqyY++QpWEYnxz62w
     ```
-    Most enterprises allocate AWS dynamically for a brief time (such as HashiCorp employees using "Bootcamp"). So the above are defined on a Terminal session for one-time use instead of being stored (long term, statically) in a <tt>~/.zshrc</tt> or <tt>~/.bash_profile</tt> file run automatically when a Terminal window is created.
+    Most enterprises allocate AWS dynamically for a brief time (such as HashiCorp employees using "Bootcamp"). So the above are defined on a Terminal session for one-time use instead of being stored (long term, statically) in a <tt>$HOME/.zshrc</tt> or <tt>$HOME/.bash_profile</tt> file run automatically when a Terminal window is created.
 
     <a name="SignInHCP"></a>
 2.  Be at the browser window which you want a new tab added to contain the URL in the next step:
