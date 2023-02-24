@@ -117,7 +117,6 @@ The approach as described in this tutorial has the following advantages:
     ```
     Most enterprises allocate AWS dynamically for a brief time (such as HashiCorp employees using "Bootcamp"). So the above are defined on a Terminal session for one-time use instead of being stored (long term, statically) in a <tt>~/.zshrc</tt> or <tt>~/.bash_profile</tt> file run automatically when a Terminal window is created.
 
-
     <a name="SignInHCP"></a>
 2.  Be at the browser window which you want a new tab added to contain the URL in the next step:
 3.  Click this URL to open the HCP portal:
@@ -153,7 +152,7 @@ The approach as described in this tutorial has the following advantages:
 
     <a name="SelectExample"></a>
     
-    ### &#9744; Select Example Deploy
+    ### &#9744; Select Example Deploy in Repo
  
 18. Obtain a copy of the repository onto your laptop:
     ```bash
@@ -165,11 +164,20 @@ The approach as described in this tutorial has the following advantages:
     <a target="_blank" href="https://github.com/stoffee/terraform-hcp-vault-eks/releases">
     https://github.com/stoffee/terraform-hcp-vault-eks/releases</a>
 
-20. Set the repo to the GitHub branch named by a release tag identified in the step above (such as "v0.0.6"):
+20. Identify release tag (such as "v0.0.6").
+21. Click "Code" on the menu bar, then the green "Code" to obtain the SSH clone name:
+22. In a Terminal, navigate to a folder where you will be cloning the repo
+23. Clone the repo and checkout the release/version in the previous step:
     ```bash
+    git clone git@github.com:stoffee/terraform-hcp-vault-eks.git
+    cd terraform-hcp-vault-eks
     git checkout v0.0.6
     ```
-21. Navigate into one of the <a target="_blank" href=https://github.com/stoffee/terraform-hcp-vault-eks/tree/primary/examples>example</a> folder of deployments:
+    Alternately, you can Fork on the GUI, then clone using your own instead of the "stoffee" account.
+
+    Notice that the repo is structured according to the HashiCorp recommended structure of folders and files at<br />https://developer.hashicorp.com/terraform/language/modules/develop/structure
+
+24. Navigate into one of the <a target="_blank" href=https://github.com/stoffee/terraform-hcp-vault-eks/tree/primary/examples>example</a> folder of deployments:
     ```bash
     cd examples
     cd full-deploy
@@ -178,7 +186,6 @@ The approach as described in this tutorial has the following advantages:
     <a target="_blank" href="https://cloud.hashicorp.com/products/vault/pricing">https://cloud.hashicorp.com/products/vault/pricing</a>.
     
     Alternately, the <tt><strong>eks-hvn-only-deploy</strong></tt> example only creates the HVN (HashiCorp Virtual Network). <a target="_blank" href="https://developer.hashicorp.com/hcp/docs/hcp/network">DEFINITION</a>: An HVN delegates an IPv4 CIDR range that HCP uses to automatically create resources in a cloud region. The HCP platform uses this CIDR range to automatically create a virtual private cloud (VPC) on AWS or a virtual network (VNet) on Azure.
-
 
     <a name="ProductionDeploy"></a>
     
@@ -204,14 +211,13 @@ The approach as described in this tutorial has the following advantages:
 
     ### &#9744; Edit options in sample.auto.tfvars
 
-22. Rename <tt>sample.auto.tfvars_example</tt> to <tt>sample.auto.tfvars</tt>
-
+25. Rename <tt>sample.auto.tfvars_example</tt> to <tt>sample.auto.tfvars</tt>
     ```bash
     cp sample.auto.tfvars_example  sample.auto.tfvars
     ```
     NOTE: Your file <tt>sample.auto.tfvars</tt> is specified in the <a target="_blank" href="https://github.com/stoffee/terraform-hcp-vault-eks/blob/main/.gitignore">this repo's .gitignore</a> file so it doesn't get uploaded into GitHub.
 
-23. Use a text editor program (such as VSCode) to customize the <tt>sample.auto.tfvars</tt> file. For example:
+26. Use a text editor program (such as VSCode) to customize the <tt>sample.auto.tfvars</tt> file. For example:
 
     <pre>cluster_id = "dev1-eks"
     deploy_hvn = true
