@@ -1,3 +1,0 @@
-injector:
-   enabled: true
-   externalVaultAddr: "https://funny-fish-public-vault-f065f57d.ecbf0891.z1.hashicorp.cloud:8200"

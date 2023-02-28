@@ -7,3 +7,4 @@ hcp_vault_cluster_id = "my-vault"
 make_vault_public    = true
 deploy_eks_cluster   = true
 vpc_region           = "us-west-2"
+eks_instance_types   = "t3a.medium"

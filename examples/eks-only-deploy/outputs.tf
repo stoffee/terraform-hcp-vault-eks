@@ -7,6 +7,14 @@ output "vault_root_token" {
   sensitive = true
 }
 
+output "vault_private_url" {
+  value = module.hcp-eks.vault_private_url
+}
+
+output "vault_public_url" {
+  value = module.hcp-eks.vault_public_url
+}
+
 output "kubeconfig_filename" {
   value = module.hcp-eks.kubeconfig_filename
 }

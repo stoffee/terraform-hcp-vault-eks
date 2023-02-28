@@ -4,6 +4,11 @@ variable "deploy_eks_cluster" {
   default     = true
 }
 
+variable "eks_cluster_version" {
+  type        = string
+  description = "The version of your EKS cluster"
+  default     = "1.21"
+}
 variable "cluster_id" {
   type        = string
   description = "The name of your EKS cluster"

@@ -7,3 +7,4 @@ cluster_id           = "my-vault"
 deploy_hvn           = true
 deploy_eks_cluster   = true
 vpc_region           = "us-west-2"
+eks_instance_types   = "t3a.medium"
