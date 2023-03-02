@@ -145,6 +145,7 @@ resource "aws_vpc_peering_connection_accepter" "peer" {
 
 
 # k8s 1.24 -> needs to manually create vault SA
+/*
 resource "kubernetes_secret" "vault" {
   metadata {
     name = "vault"
@@ -153,19 +154,16 @@ resource "kubernetes_secret" "vault" {
       "kubernetes.io/service-account.name" = "vault"
     }
   }
-  type = "kubernetes.io/service-account-token"
-  depends_on = [
-    kubernetes_secret.vault,
-  ]
 }
 
 resource "kubernetes_service_account" "vault" {
   metadata {
-    name      = "vault"
- #   namespace = "debugging"
+    name = "vault"
+    #   namespace = "debugging"
   }
   automount_service_account_token = false
 }
+*/
 
 resource "helm_release" "new_vault_public" {
   #count      = var.deploy_vault_cluster ? 1 : 0 && var.make_vault_public ? 1 : 0
@@ -174,6 +172,7 @@ resource "helm_release" "new_vault_public" {
   repository = "https://helm.releases.hashicorp.com"
   chart      = "vault"
   depends_on = [hcp_vault_cluster_admin_token.vault_admin_token]
+  #depends_on = [hcp_vault_cluster_admin_token.vault_admin_token, kubernetes_secret.vault]
   /*
   # private vault enpoint
   values = [<<EOF
@@ -185,6 +184,10 @@ resource "helm_release" "new_vault_public" {
 */
   # public vault enpoint
   values = [<<EOF
+  server:
+      serviceAccount:
+        create: true
+        name: "vault"
   injector:
    enabled: true
    externalVaultAddr: ${hcp_vault_cluster.new_vault_cluster[0].vault_public_endpoint_url}
@@ -198,6 +201,7 @@ resource "helm_release" "existing_vault_public" {
   repository = "https://helm.releases.hashicorp.com"
   chart      = "vault"
   depends_on = [hcp_vault_cluster_admin_token.vault_admin_token]
+  #depends_on = [hcp_vault_cluster_admin_token.vault_admin_token, kubernetes_secret.vault]
   /*
   # private vault enpoint
   values = [<<EOF
