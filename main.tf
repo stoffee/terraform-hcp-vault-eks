@@ -74,19 +74,6 @@ module "eks" {
   }
 }
 
-# k8s 1.24 -> needs to manually create vault SA
-/*
-resource "kubernetes_secret" "vault" {
-  metadata {
-    name = "vault-auth-secret"
-    annotations = {
-      "kubernetes.io/service-account.name" = "vault-auth"
-    }
-  }
-  type = "kubernetes.io/service-account-token"
-}
-*/
-
 /*
 resource "hcp_vault_cluster" "vault_cluster_existing_hvn" {
   count      = var.deploy_vault_cluster ? 1 : 0 && var.deploy_hvn ? 0 : 1
@@ -156,6 +143,30 @@ resource "aws_vpc_peering_connection_accepter" "peer" {
   auto_accept               = true
 }
 
+
+# k8s 1.24 -> needs to manually create vault SA
+resource "kubernetes_secret" "vault" {
+  metadata {
+    name = "vault"
+    #name = "vault-auth-secret"
+    annotations = {
+      "kubernetes.io/service-account.name" = "vault"
+    }
+  }
+  type = "kubernetes.io/service-account-token"
+  depends_on = [
+    kubernetes_secret.vault,
+  ]
+}
+
+resource "kubernetes_service_account" "vault" {
+  metadata {
+    name      = "vault"
+ #   namespace = "debugging"
+  }
+  automount_service_account_token = false
+}
+
 resource "helm_release" "new_vault_public" {
   #count      = var.deploy_vault_cluster ? 1 : 0 && var.make_vault_public ? 1 : 0
   count      = var.deploy_vault_cluster ? 1 : 0
@@ -198,6 +209,10 @@ resource "helm_release" "existing_vault_public" {
 */
   # public vault enpoint
   values = [<<EOF
+  server:
+      serviceAccount:
+        create: true
+        name: "vault"
   injector:
    enabled: true
    externalVaultAddr: ${data.hcp_vault_cluster.existing_vault_cluster[0].vault_public_endpoint_url}

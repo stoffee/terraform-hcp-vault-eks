@@ -5,7 +5,6 @@ variable "deploy_eks_cluster" {
 }
 
 variable "eks_cluster_version" {
-  type        = string
   description = "The version of your EKS cluster"
   default     = "1.21"
 }
