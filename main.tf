@@ -197,9 +197,9 @@ resource "helm_release" "new_vault_public" {
 
 resource "helm_release" "existing_vault_public" {
   count      = var.deploy_vault_cluster ? 0 : 1
-  name       = "vault"
+  name       = "vault-agent-sidecar"
   repository = "https://helm.releases.hashicorp.com"
-  chart      = "vault"
+  chart      = "vault-agent-sidecar"
   depends_on = [hcp_vault_cluster_admin_token.vault_admin_token]
   #depends_on = [hcp_vault_cluster_admin_token.vault_admin_token, kubernetes_secret.vault]
   /*
